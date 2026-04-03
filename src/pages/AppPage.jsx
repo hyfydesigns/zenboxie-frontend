@@ -9,7 +9,7 @@ import {
 import { useTierGate } from "../components/TierGate";
 import { getLimits } from "../config/tiers";
 
-const API = "/api";
+const API = (import.meta.env.VITE_API_URL || "") + "/api";
 
 const IMPORTANT_DOMAINS = ["chase.com", "wellsfargo.com", "irs.gov", "paypal.com", "billing", "stripe.com", "bank", "tax"];
 const isImportant = (email) => IMPORTANT_DOMAINS.some((d) => email.includes(d));
