@@ -103,6 +103,12 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
+      <p style={{ textAlign: "center", marginTop: 32, fontSize: 12, color: "#94a3b8" }}>
+        By creating an account you agree to our{" "}
+        <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none" }}>Terms of Service</Link>
+        {" and "}
+        <Link to="/privacy" style={{ color: "#94a3b8", textDecoration: "none" }}>Privacy Policy</Link>
+      </p>
     </div>
   );
 }

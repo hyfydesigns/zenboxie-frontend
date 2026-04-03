@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ZenboxieWordmark, Spinner, TEAL, TEAL_DARK, TEAL_LIGHT, TEAL_MID, GlobalStyles } from "../components/ui";
+import { ZenboxieWordmark, Spinner, TEAL, TEAL_DARK, TEAL_MID, GlobalStyles } from "../components/ui";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -85,6 +85,11 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+      <p style={{ textAlign: "center", marginTop: 32, fontSize: 12, color: "#94a3b8" }}>
+        <Link to="/privacy" style={{ color: "#94a3b8", textDecoration: "none" }}>Privacy Policy</Link>
+        {" · "}
+        <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none" }}>Terms of Service</Link>
+      </p>
     </div>
   );
 }
