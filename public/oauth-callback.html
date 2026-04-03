@@ -8,6 +8,15 @@
   </head>
   <body>
     <p>Signing in...</p>
+    <script>
+      // Injected by the backend redirect — the API base URL is embedded in the redirect URL
+      // We read it from the query param ?api= if present, otherwise fall back to same-origin
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var api = params.get("api");
+        if (api) window.__ZENBOXIE_API__ = decodeURIComponent(api);
+      })();
+    </script>
     <script src="/oauth-callback.js"></script>
   </body>
 </html>

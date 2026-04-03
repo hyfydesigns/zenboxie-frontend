@@ -7,8 +7,8 @@
     return;
   }
 
-  // Use /api prefix so Vite proxies it to the backend
-  fetch("/api/auth/google/pending/" + token)
+  var apiBase = window.__ZENBOXIE_API__ || "";
+  fetch(apiBase + "/api/auth/google/pending/" + token)
     .then(function (r) {
       if (!r.ok) throw new Error("Status " + r.status);
       return r.json();
