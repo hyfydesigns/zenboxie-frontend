@@ -22,7 +22,7 @@ const SECTIONS = [
       },
       {
         q: "How do I create a Zenboxie account?",
-        a: `Click "Register" on the login page and enter your email and a password (minimum 8 characters). You'll be logged in immediately. A Zenboxie account lets you save your email connection, access Pro features, and use Auto-Clean and Retention rules.`,
+        a: `Click "Register" on the login page and enter your email and a password (minimum 8 characters). You'll receive an activation email — click the link inside to verify your address before signing in.\n\nOnce verified, logging in takes you to your Account Dashboard where you can connect an email, manage your plan, and access all features.`,
       },
     ],
   },
@@ -120,16 +120,20 @@ const SECTIONS = [
     title: "Connected Accounts",
     items: [
       {
+        q: "What is the Account Dashboard?",
+        a: `The Account Dashboard (/account) is your home after signing in. It shows:\n\n• Your current plan and renewal date\n• Quick links to all features (Inbox, Auto-Clean, Retention, Team, Pricing, Help)\n• All connected email accounts with the option to disconnect any of them\n• An "Open Inbox" button that lets you pick which inbox to open if you have multiple accounts`,
+      },
+      {
         q: "How many email accounts can I connect?",
         a: `• **Free** — 1 account\n• **Pro** — Up to 3 accounts\n• **Premium** — Unlimited accounts`,
       },
       {
         q: "How do I switch between connected accounts?",
-        a: `Click the email address dropdown (▾) in the top header. Your saved accounts are listed there. Click any account to switch to it — Zenboxie will reconnect and rescan automatically.`,
+        a: `There are two ways:\n\n• **From the Account Dashboard** — Click "Open Inbox ▾" in the header. If you have multiple accounts connected, a dropdown lists each one. Click any to open that inbox.\n\n• **From the Inbox** — Click the email address dropdown (▾) in the top header. Your saved accounts are listed there. Click any account to switch — Zenboxie will reconnect and rescan automatically.`,
       },
       {
         q: "How do I connect a second account?",
-        a: `Click the email address dropdown (▾) in the header → "+ Connect New Account". This takes you to the connect screen where you can add another email. You must be on Pro or Premium to connect more than one account.`,
+        a: `From the Account Dashboard (/account), click "+ Add account" next to the Connected Email Accounts section. You can also use the "▾" dropdown in the inbox header → "+ Connect New Account". You must be on Pro or Premium to connect more than one account.`,
       },
       {
         q: "How do I disconnect an account?",
