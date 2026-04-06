@@ -67,6 +67,9 @@ export default function AccountPage() {
   const [disconnecting, setDisconnecting] = useState(null);
   const [toast, setToast] = useState(null);
   const [inboxMenuOpen, setInboxMenuOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const inboxMenuRef = useRef(null);
 
   useEffect(() => {
@@ -126,6 +129,18 @@ export default function AccountPage() {
       showToast(err.message, "error");
     } finally {
       setDisconnecting(null);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await apiCall("/user/me", { method: "DELETE" });
+      logout();
+    } catch (err) {
+      showToast(err.message, "error");
+      setDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
@@ -325,8 +340,62 @@ export default function AccountPage() {
           >
             Sign out
           </button>
+          <button
+            onClick={() => { setDeleteConfirmText(""); setShowDeleteModal(true); }}
+            style={{ padding: "10px 24px", borderRadius: 10, border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
+          >
+            Delete account
+          </button>
         </div>
       </div>
+
+      {/* Delete account modal */}
+      {showDeleteModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false); }}
+        >
+          <div style={{ background: "#fff", borderRadius: 16, padding: "28px 24px", maxWidth: 420, width: "100%", boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}>
+            <div style={{ fontSize: 36, marginBottom: 12, textAlign: "center" }}>⚠️</div>
+            <h2 style={{ margin: "0 0 10px", fontSize: 18, fontWeight: 800, color: "#0f2a2a", textAlign: "center" }}>Delete your account?</h2>
+            <p style={{ margin: "0 0 16px", fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
+              This will permanently delete:
+            </p>
+            <ul style={{ margin: "0 0 16px", paddingLeft: 20, fontSize: 14, color: "#475569", lineHeight: 2 }}>
+              <li>Your Zenboxie account and profile</li>
+              <li>All connected email accounts</li>
+              <li>All Auto-Clean and Retention rules</li>
+              <li>All team invites</li>
+              {subscription && subscription.tier !== "FREE" && <li>Your active <strong>{subscription.tier === "PRO" ? "Pro" : "Premium"}</strong> subscription (cancelled immediately)</li>}
+            </ul>
+            <p style={{ margin: "0 0 14px", fontSize: 13, color: "#64748b" }}>
+              Type <strong>DELETE</strong> to confirm:
+            </p>
+            <input
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder="DELETE"
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1.5px solid #fecaca", fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: "inherit", marginBottom: 16 }}
+              onFocus={(e) => (e.target.style.borderColor = "#dc2626")}
+              onBlur={(e) => (e.target.style.borderColor = "#fecaca")}
+            />
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: "1.5px solid #e2e8f0", background: "#fff", color: "#64748b", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmText !== "DELETE" || deleting}
+                style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: "none", background: deleteConfirmText === "DELETE" && !deleting ? "#dc2626" : "#fca5a5", color: "#fff", fontWeight: 700, fontSize: 14, cursor: deleteConfirmText === "DELETE" && !deleting ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+              >
+                {deleting ? <><Spinner color="#fff" size={14} /> Deleting…</> : "Delete my account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {toast && <Toast msg={toast.msg} type={toast.type} />}
     </div>
