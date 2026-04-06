@@ -452,33 +452,13 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
     "One-click unsubscribe is a Premium feature. Upgrade to Premium to unsubscribe directly from your inbox."
   );
   const [unsubLink, setUnsubLink] = useState(null);
-  const [loadingUnsub, setLoadingUnsub] = useState(false);
 
-  const handleUnsubscribe = async () => {
+
+  const handleUnsubscribe = () => {
     if (!gateUnsubscribe()) return;
-    setLoadingUnsub(true);
-    // Open the tab synchronously (before any await) so the browser treats it as a user gesture
-    const tab = window.open("", "_blank");
-    try {
-      const data = await apiCall(`/emails/unsubscribe/${encodeURIComponent(sender.email)}`, {}, sessionId);
-      const link = data.unsubscribe;
-      if (link?.url) {
-        tab.location.href = link.url;
-        setUnsubLink(link);
-      } else if (link?.mailto) {
-        tab.close();
-        window.location.href = link.mailto;
-        setUnsubLink(link);
-      } else {
-        tab.close();
-        showToast("No unsubscribe link found for this sender.", "error");
-      }
-    } catch (err) {
-      tab.close();
-      showToast(err.upgradeRequired ? "Upgrade required." : err.message, "error");
-    } finally {
-      setLoadingUnsub(false);
-    }
+    const url = `${API}/emails/unsubscribe/${encodeURIComponent(sender.email)}/redirect?sessionId=${sessionId}`;
+    window.open(url, "_blank");
+    setUnsubLink({ url });
   };
 
   const loadSample = async () => {
@@ -546,10 +526,10 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
           <button onClick={loadSample} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}>
             {expanded ? "▲" : "▼"}
           </button>
-          <button onClick={handleUnsubscribe} disabled={loadingUnsub}
+          <button onClick={handleUnsubscribe}
             title={unsubLink ? "Unsubscribed" : "Unsubscribe"}
             style={{ padding: "8px 12px", borderRadius: 8, border: "1.5px solid #e0e7ff", background: unsubLink ? "#ede9fe" : "#fff", color: "#6366f1", fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0 }}>
-            {loadingUnsub ? <Spinner color="#6366f1" size={12} /> : "✉ Unsub"}
+            ✉ Unsub
           </button>
           <button onClick={() => setConfirming(true)}
             style={{ padding: "8px 16px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0, transition: "all 0.15s" }}
