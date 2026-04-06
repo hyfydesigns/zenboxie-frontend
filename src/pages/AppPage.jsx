@@ -241,6 +241,35 @@ const ScanningStep = ({ sessionId, email, folder = "INBOX", onDone, onError }) =
 
 // ─── Team Invite Banner ───────────────────────────────────────────────────────
 
+const EmailVerificationBanner = ({ email }) => {
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const resend = async () => {
+    setLoading(true);
+    try {
+      await apiCall("/user/resend-verification", { method: "POST" });
+      setSent(true);
+    } catch (_) {}
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div style={{ background: "#fefce8", borderBottom: "1px solid #fde68a", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+      <span style={{ fontSize: 13, color: "#92400e" }}>
+        📧 Please verify your email address. Check your inbox at <strong>{email}</strong>.
+      </span>
+      {!sent ? (
+        <button onClick={resend} disabled={loading} style={{ fontSize: 12, fontWeight: 600, color: "#b45309", background: "none", border: "1px solid #fde68a", borderRadius: 6, padding: "4px 12px", cursor: "pointer" }}>
+          {loading ? "Sending..." : "Resend email"}
+        </button>
+      ) : (
+        <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>✓ Sent!</span>
+      )}
+    </div>
+  );
+};
+
 const TeamInviteBanner = ({ invite, onAccepted }) => {
   const [loading, setLoading] = useState(false);
   const accept = async () => {
@@ -837,6 +866,9 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
         )}
       </header>
 
+      {user && user.emailVerified === false && (
+        <EmailVerificationBanner email={user.email} />
+      )}
       {user?.pendingTeamInvite && (
         <TeamInviteBanner invite={user.pendingTeamInvite} onAccepted={() => window.location.reload()} />
       )}

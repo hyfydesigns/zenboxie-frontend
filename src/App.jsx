@@ -12,6 +12,7 @@ import TeamPage from "./pages/TeamPage";
 import HelpPage from "./pages/HelpPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/help" element={<HelpPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/verify" element={<VerifyEmailPage />} />
           <Route path="/autoclean" element={<PrivateRoute><AutoCleanPage /></PrivateRoute>} />
           <Route path="/retention" element={<PrivateRoute><RetentionPage /></PrivateRoute>} />
           <Route path="/team" element={<PrivateRoute><TeamPage /></PrivateRoute>} />
