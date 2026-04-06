@@ -457,19 +457,24 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
   const handleUnsubscribe = async () => {
     if (!gateUnsubscribe()) return;
     setLoadingUnsub(true);
+    // Open the tab synchronously (before any await) so the browser treats it as a user gesture
+    const tab = window.open("", "_blank");
     try {
       const data = await apiCall(`/emails/unsubscribe/${encodeURIComponent(sender.email)}`, {}, sessionId);
       const link = data.unsubscribe;
       if (link?.url) {
-        window.open(link.url, "_blank", "noopener");
+        tab.location.href = link.url;
         setUnsubLink(link);
       } else if (link?.mailto) {
+        tab.close();
         window.location.href = link.mailto;
         setUnsubLink(link);
       } else {
+        tab.close();
         showToast("No unsubscribe link found for this sender.", "error");
       }
     } catch (err) {
+      tab.close();
       showToast(err.upgradeRequired ? "Upgrade required." : err.message, "error");
     } finally {
       setLoadingUnsub(false);
