@@ -58,7 +58,7 @@ function NavCard({ icon, label, description, to, color = TEAL_LIGHT }) {
 }
 
 export default function AccountPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [accounts, setAccounts] = useState([]);
@@ -84,6 +84,26 @@ export default function AccountPage() {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get("upgraded")) return;
+    window.history.replaceState({}, "", window.location.pathname);
+
+    const refresh = () => Promise.all([
+      refreshUser(),
+      apiCall("/billing/subscription").then(setSubscription).catch(() => null),
+    ]);
+
+    apiCall("/billing/sync", { method: "POST" }).catch(() => null).finally(refresh);
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      await refresh();
+      attempts++;
+      if (attempts >= 4) clearInterval(interval);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     Promise.all([
