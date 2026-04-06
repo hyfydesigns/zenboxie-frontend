@@ -535,27 +535,50 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
               <div style={{ fontSize: 11, color: "#94a3b8" }}>storage</div>
             </div>
           </>}
-          <button onClick={loadSample} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}>
-            {expanded ? "▲" : "▼"}
-          </button>
-          <button onClick={handleUnsubscribe}
-            title={unsubLink ? "Unsubscribed" : "Unsubscribe"}
-            style={{ padding: "8px 12px", borderRadius: 8, border: "1.5px solid #e0e7ff", background: unsubLink ? "#ede9fe" : "#fff", color: "#6366f1", fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0 }}>
-            ✉ Unsub
-          </button>
-          <button onClick={() => setConfirming(true)}
-            style={{ padding: "8px 16px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0, transition: "all 0.15s" }}
-            onMouseEnter={(e) => { e.target.style.background = TEAL_LIGHT; e.target.style.borderColor = TEAL; }}
-            onMouseLeave={(e) => { e.target.style.background = "#fff"; e.target.style.borderColor = TEAL_MID; }}>
-            Delete
-          </button>
+          {!isMobile && (
+            <button onClick={loadSample} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}>
+              {expanded ? "▲" : "▼"}
+            </button>
+          )}
+          {!isMobile && (
+            <button onClick={handleUnsubscribe}
+              title={unsubLink ? "Unsubscribed" : "Unsubscribe"}
+              style={{ padding: "8px 12px", borderRadius: 8, border: "1.5px solid #e0e7ff", background: unsubLink ? "#ede9fe" : "#fff", color: "#6366f1", fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0 }}>
+              ✉ Unsub
+            </button>
+          )}
+          {!isMobile && (
+            <button onClick={() => setConfirming(true)}
+              style={{ padding: "8px 16px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 13, cursor: "pointer", flexShrink: 0, transition: "all 0.15s" }}
+              onMouseEnter={(e) => { e.target.style.background = TEAL_LIGHT; e.target.style.borderColor = TEAL; }}
+              onMouseLeave={(e) => { e.target.style.background = "#fff"; e.target.style.borderColor = TEAL_MID; }}>
+              Delete
+            </button>
+          )}
         </div>
-        {/* Row 2 (mobile only): count + size */}
+        {/* Row 2 (mobile): buttons + count + size on same line */}
         {isMobile && (
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10, paddingLeft: 72 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{sender.count.toLocaleString()} emails</span>
-            <span style={{ fontSize: 12, color: "#94a3b8" }}>·</span>
-            <span style={{ fontSize: 13, color: "#475569" }}>{formatSize(sender.sizeMb)}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+            <button onClick={handleUnsubscribe}
+              title={unsubLink ? "Unsubscribed" : "Unsubscribe"}
+              style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: "1.5px solid #e0e7ff", background: unsubLink ? "#ede9fe" : "#fff", color: "#6366f1", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+              ✉ Unsub
+            </button>
+            <button onClick={() => setConfirming(true)}
+              style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+              Delete
+            </button>
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "#1e293b" }}>{sender.count.toLocaleString()}</div>
+              <div style={{ fontSize: 11, color: "#94a3b8" }}>emails</div>
+            </div>
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontWeight: 600, fontSize: 13, color: "#475569" }}>{formatSize(sender.sizeMb)}</div>
+              <div style={{ fontSize: 11, color: "#94a3b8" }}>storage</div>
+            </div>
+            <button onClick={loadSample} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18, padding: "4px 8px", flexShrink: 0 }}>
+              {expanded ? "▲" : "▼"}
+            </button>
           </div>
         )}
 
