@@ -41,7 +41,7 @@ export default function TermsPage() {
 
         {/* Header */}
         <div style={{ background: "#fff", borderBottom: `1px solid ${TEAL_MID}`, padding: isMobile ? "16px" : "16px 40px", display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
+          <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
             <ZenboxieLogo size={40} />
           </div>
           <div style={{ flex: 1 }}>
@@ -50,7 +50,7 @@ export default function TermsPage() {
             </span>
           </div>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "7px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
           >
             ← Back to app
