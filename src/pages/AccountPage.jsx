@@ -270,14 +270,22 @@ export default function AccountPage() {
                       <span>Last used {timeAgo(account.lastUsedAt)}</span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDisconnect(account.id, account.email)}
-                    disabled={disconnecting === account.id}
-                    style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontSize: 13, fontWeight: 600, cursor: disconnecting === account.id ? "not-allowed" : "pointer", flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}
-                  >
-                    {disconnecting === account.id ? <Spinner color="#dc2626" size={12} /> : null}
-                    {disconnecting === account.id ? "Removing…" : "Disconnect"}
-                  </button>
+                  <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                    <button
+                      onClick={() => navigate(`/?accountId=${account.id}`)}
+                      style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+                    >
+                      Open Inbox
+                    </button>
+                    <button
+                      onClick={() => handleDisconnect(account.id, account.email)}
+                      disabled={disconnecting === account.id}
+                      style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontSize: 13, fontWeight: 600, cursor: disconnecting === account.id ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6 }}
+                    >
+                      {disconnecting === account.id ? <Spinner color="#dc2626" size={12} /> : null}
+                      {disconnecting === account.id ? "Removing…" : "Disconnect"}
+                    </button>
+                  </div>
                 </div>
               );
             })}
