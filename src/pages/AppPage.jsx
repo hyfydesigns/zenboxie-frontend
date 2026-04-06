@@ -454,11 +454,27 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
   const [unsubLink, setUnsubLink] = useState(null);
 
 
-  const handleUnsubscribe = () => {
+  const handleUnsubscribe = async () => {
     if (!gateUnsubscribe()) return;
-    const url = `${API}/emails/unsubscribe/${encodeURIComponent(sender.email)}/redirect?sessionId=${sessionId}`;
-    window.open(url, "_blank");
-    setUnsubLink({ url });
+    try {
+      const data = await apiCall(`/emails/unsubscribe/${encodeURIComponent(sender.email)}`, {}, sessionId);
+      const link = data.unsubscribe;
+      if (link?.url || link?.mailto) {
+        const href = link.url || link.mailto;
+        const a = document.createElement("a");
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setUnsubLink(link);
+      } else {
+        showToast("No unsubscribe link found for this sender.", "error");
+      }
+    } catch (err) {
+      showToast(err.upgradeRequired ? "Upgrade to Premium to use unsubscribe." : err.message, "error");
+    }
   };
 
   const loadSample = async () => {
