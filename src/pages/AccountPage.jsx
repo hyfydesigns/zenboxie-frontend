@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { apiCall } from "../api";
@@ -66,6 +66,19 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [disconnecting, setDisconnecting] = useState(null);
   const [toast, setToast] = useState(null);
+  const [inboxMenuOpen, setInboxMenuOpen] = useState(false);
+  const inboxMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (!inboxMenuOpen) return;
+    const handler = (e) => {
+      if (inboxMenuRef.current && !inboxMenuRef.current.contains(e.target)) {
+        setInboxMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [inboxMenuOpen]);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -126,12 +139,30 @@ export default function AccountPage() {
           >
             ❓ Help
           </button>
-          <button
-            onClick={() => navigate("/")}
-            style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
-          >
-            📬 Open Inbox
-          </button>
+          <div ref={inboxMenuRef} style={{ position: "relative" }}>
+            <button
+              onClick={() => accounts.length > 1 ? setInboxMenuOpen((o) => !o) : navigate("/")}
+              style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+            >
+              📬 Open Inbox {accounts.length > 1 && <span style={{ fontSize: 11 }}>▾</span>}
+            </button>
+            {inboxMenuOpen && (
+              <div style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, background: "#fff", border: `1.5px solid ${TEAL_MID}`, borderRadius: 10, boxShadow: "0 8px 24px rgba(12,184,182,0.12)", minWidth: 220, zIndex: 200, overflow: "hidden" }}>
+                {accounts.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => { setInboxMenuOpen(false); navigate(`/?accountId=${a.id}`); }}
+                    style={{ width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 13, color: "#1e293b", display: "flex", flexDirection: "column", gap: 2 }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = TEAL_LIGHT}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                  >
+                    <span style={{ fontWeight: 600 }}>{a.email}</span>
+                    <span style={{ fontSize: 11, color: "#94a3b8" }}>{(PROVIDER_LABEL[a.provider] || a.provider)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             onClick={logout}
             style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid #e2e8f0`, background: "#fff", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer" }}

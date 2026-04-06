@@ -1028,6 +1028,24 @@ export default function AppPage() {
       return;
     }
 
+    // If ?accountId=<id> is present, reconnect that specific account
+    const accountIdParam = params.get("accountId");
+    if (accountIdParam) {
+      window.history.replaceState({}, "", window.location.pathname);
+      sessionStorage.removeItem("inboxSessionId");
+      setPhase("reconnecting");
+      apiCall(`/accounts/${accountIdParam}/reconnect`, { method: "POST" })
+        .then((result) => {
+          sessionStorage.setItem("inboxSessionId", result.sessionId);
+          setSessionId(result.sessionId);
+          setUserEmail(result.email);
+          setProvider(result.provider);
+          setPhase("scanning");
+        })
+        .catch(() => setPhase("connect"));
+      return;
+    }
+
     const urlSessionId = params.get("sessionId");
     if (urlSessionId) {
       window.history.replaceState({}, "", window.location.pathname);
