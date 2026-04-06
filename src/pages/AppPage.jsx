@@ -452,6 +452,7 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
     "One-click unsubscribe is a Premium feature. Upgrade to Premium to unsubscribe directly from your inbox."
   );
   const [unsubLink, setUnsubLink] = useState(null);
+  const [unsubToast, setUnsubToast] = useState(null);
 
 
   const handleUnsubscribe = async () => {
@@ -461,14 +462,9 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
       const link = data.unsubscribe;
       if (link?.url || link?.mailto) {
         const href = link.url || link.mailto;
-        const a = document.createElement("a");
-        a.href = href;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
         setUnsubLink(link);
+        setUnsubToast(href);
+        setTimeout(() => setUnsubToast(null), 10000);
       } else {
         showToast("No unsubscribe link found for this sender.", "error");
       }
@@ -598,6 +594,17 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
       {permanentDeletePrompt}
       {previewPrompt}
       {unsubscribePrompt}
+      {unsubToast && (
+        <div style={{ position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)", background: "#0f2a2a", color: "#fff", padding: "14px 20px", borderRadius: 12, fontSize: 13, zIndex: 2000, boxShadow: "0 8px 32px rgba(0,0,0,0.25)", maxWidth: 480, width: "90vw", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontWeight: 600 }}>✉ Unsubscribe link found:</div>
+          <a href={unsubToast} target="_blank" rel="noopener noreferrer" style={{ color: "#2dd4bf", wordBreak: "break-all", fontSize: 12 }}>{unsubToast}</a>
+          <div style={{ display: "flex", gap: 8 }}>
+            <a href={unsubToast} target="_blank" rel="noopener noreferrer" style={{ padding: "7px 16px", borderRadius: 8, background: TEAL, color: "#fff", fontWeight: 600, fontSize: 13, textDecoration: "none" }}>Open link →</a>
+            <button onClick={() => { navigator.clipboard.writeText(unsubToast); showToast("Link copied!"); }} style={{ padding: "7px 16px", borderRadius: 8, border: "1.5px solid #2dd4bf", background: "none", color: "#2dd4bf", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Copy</button>
+            <button onClick={() => setUnsubToast(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "#94a3b8", fontSize: 18, cursor: "pointer", lineHeight: 1 }}>×</button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
