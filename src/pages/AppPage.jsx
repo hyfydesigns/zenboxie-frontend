@@ -460,10 +460,9 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
     try {
       const data = await apiCall(`/emails/unsubscribe/${encodeURIComponent(sender.email)}`, {}, sessionId);
       const link = data.unsubscribe;
-      if (link?.url || link?.mailto) {
-        const href = link.url || link.mailto;
+      if (link?.url) {
         setUnsubLink(link);
-        setUnsubToast(href);
+        setUnsubToast(link.url);
         setTimeout(() => setUnsubToast(null), 10000);
       } else {
         showToast("No unsubscribe link found for this sender.", "error");
