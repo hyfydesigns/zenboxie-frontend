@@ -7,7 +7,7 @@ import {
   ZenboxieWordmark, Spinner, GlobalStyles, Toast, useIsMobile,
 } from "../components/ui";
 
-const PROVIDER_LABEL = { IMAP: "IMAP", GMAIL: "Gmail OAuth", OUTLOOK: "Outlook" };
+const PROVIDER_LABEL = { IMAP: "Email", GMAIL: "Gmail", OUTLOOK: "Outlook" };
 const PROVIDER_COLOR = {
   IMAP: { bg: TEAL_LIGHT, text: TEAL_DARK, border: TEAL_MID },
   GMAIL: { bg: "#fef3c7", text: "#b45309", border: "#fde68a" },

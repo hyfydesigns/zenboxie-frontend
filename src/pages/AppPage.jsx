@@ -109,8 +109,8 @@ const ConnectStep = ({ onConnect }) => {
 
         <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 8px 40px rgba(12,184,182,0.1)", border: `1px solid ${TEAL_MID}`, overflow: "hidden" }}>
           <div style={{ display: "flex", borderBottom: "1px solid #f1f5f9", padding: "0 24px" }}>
-            <button style={tabStyle(activeTab === "imap")} onClick={() => setActiveTab("imap")}>✉️ Email / IMAP</button>
-            <button style={tabStyle(activeTab === "google")} onClick={() => setActiveTab("google")}>🔐 Google OAuth</button>
+            <button style={tabStyle(activeTab === "imap")} onClick={() => setActiveTab("imap")}>✉️ Email & Password</button>
+            <button style={tabStyle(activeTab === "google")} onClick={() => setActiveTab("google")}>🔐 Sign in with Google</button>
           </div>
 
           <div style={{ padding: 28 }}>
@@ -139,7 +139,7 @@ const ConnectStep = ({ onConnect }) => {
                 {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
                 <button onClick={handleImapConnect} disabled={loading}
                   style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 4px 14px rgba(12,184,182,0.35)" }}>
-                  {loading ? <><Spinner /> Connecting...</> : "Connect via IMAP"}
+                  {loading ? <><Spinner /> Connecting...</> : "Connect Email"}
                 </button>
               </div>
             )}
@@ -838,7 +838,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 100, border: `1.5px solid ${TEAL_MID}`, background: "#fff", cursor: "pointer", fontFamily: "inherit" }}
             >
               <span style={{ fontSize: 11, padding: "2px 7px", borderRadius: 100, background: provider === "gmail" ? "#fef3c7" : TEAL_LIGHT, color: provider === "gmail" ? "#b45309" : TEAL_DARK, fontWeight: 600 }}>
-                {provider === "gmail" ? "Gmail" : "IMAP"}
+                {provider === "gmail" ? "Gmail" : "Email"}
               </span>
               {!isMobile && <span style={{ fontSize: 13, color: "#64748b", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{email}</span>}
               <span style={{ fontSize: 10, color: "#94a3b8" }}>▾</span>

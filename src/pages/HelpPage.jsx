@@ -10,7 +10,7 @@ const SECTIONS = [
     items: [
       {
         q: "How do I connect my email?",
-        a: `Go to the main app and choose how to connect:\n\n• **Gmail OAuth** (recommended for Gmail) — Click "Connect with Google", sign in, and authorize Zenboxie. No password needed.\n\n• **IMAP** — Enter your email address and an app password (see below). Works for Gmail, Yahoo, Outlook, iCloud, and custom mail servers.`,
+        a: `Go to the main app and choose how to connect:\n\n• **Sign in with Google** (recommended for Gmail) — Click "Connect with Google", sign in, and authorize Zenboxie. No password needed.\n\n• **Email & Password** — Enter your email address and an app password (see below). Works for Gmail, Yahoo, Outlook, iCloud, and custom mail servers.`,
       },
       {
         q: "What is an App Password and why do I need one?",
@@ -18,7 +18,7 @@ const SECTIONS = [
       },
       {
         q: "Can I use my real email password?",
-        a: `It depends on your provider:\n\n• **Gmail** — No. Google disabled basic auth in 2022. Use Gmail OAuth (no password at all) or an App Password.\n• **Yahoo** — No. Use an App Password.\n• **Outlook** — Only if 2FA is disabled. Otherwise use an App Password.\n• **iCloud** — No. Use an App-Specific Password.\n• **Custom/work mail servers** — Usually yes, regular passwords work.`,
+        a: `It depends on your provider:\n\n• **Gmail** — No. Google disabled basic auth in 2022. Use "Sign in with Google" (no password at all) or an App Password.\n• **Yahoo** — No. Use an App Password.\n• **Outlook** — Only if 2FA is disabled. Otherwise use an App Password.\n• **iCloud** — No. Use an App-Specific Password.\n• **Custom/work mail servers** — Usually yes, regular passwords work.`,
       },
       {
         q: "How do I create a Zenboxie account?",
@@ -41,7 +41,7 @@ const SECTIONS = [
       },
       {
         q: "Can I scan a specific folder?",
-        a: `Yes, if you're on a Premium plan and using IMAP. A folder selector appears above the sender list. Select any folder and click "Rescan" to analyse it. Gmail OAuth uses labels instead of folders and scans the full inbox by default.`,
+        a: `Yes, if you're on a Premium plan and connected via Email & Password. A folder selector appears above the sender list. Select any folder and click "Rescan" to analyse it. Gmail (Sign in with Google) uses labels instead of folders and scans the full inbox by default.`,
       },
       {
         q: "How do I rescan after making changes?",
@@ -148,7 +148,7 @@ const SECTIONS = [
     items: [
       {
         q: "What is included in the Free plan?",
-        a: `• 1 connected account\n• Gmail OAuth & IMAP\n• Scan up to 500 emails\n• 3 sender deletions per day\n• Move to trash only\n• CSV export`,
+        a: `• 1 connected account\n• Sign in with Google & Email & Password\n• Scan up to 500 emails\n• 3 sender deletions per day\n• Move to trash only\n• CSV export`,
       },
       {
         q: "What does Pro add?",
@@ -202,7 +202,7 @@ const SECTIONS = [
       },
       {
         q: "How are my email credentials stored?",
-        a: `IMAP credentials are encrypted with AES-256 before being stored in the database. The encryption key never leaves the server. Gmail OAuth stores an access token (not your password) which can be revoked at any time from your Google account.`,
+        a: `Email & Password credentials are encrypted with AES-256 before being stored in the database. The encryption key never leaves the server. Sign in with Google stores an access token (not your password) which can be revoked at any time from your Google account.`,
       },
       {
         q: "How do I revoke Zenboxie's access to my Gmail?",
