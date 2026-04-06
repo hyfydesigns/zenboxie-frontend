@@ -519,8 +519,8 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
             {(sender.name || sender.email)[0].toUpperCase()}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <span style={{ fontWeight: 600, color: "#1e293b", fontSize: 14 }}>{sender.name}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+              <span style={{ fontWeight: 600, color: "#1e293b", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sender.name}</span>
               {important && <Badge color="yellow">⚠ Review before deleting</Badge>}
             </div>
             <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sender.email}</div>
