@@ -452,7 +452,7 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
     "One-click unsubscribe is a Premium feature. Upgrade to Premium to unsubscribe directly from your inbox."
   );
   const [unsubLink, setUnsubLink] = useState(null);
-
+  const isMobile = useIsMobile();
 
   const handleUnsubscribe = async () => {
     if (!gateUnsubscribe()) return;
@@ -511,7 +511,8 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
         onMouseEnter={(e) => { if (!selected) e.currentTarget.style.boxShadow = "0 4px 16px rgba(12,184,182,0.1)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        {/* Row 1: checkbox + avatar + name/email (+ count/size on desktop) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <input type="checkbox" checked={selected} onChange={() => onToggleSelect(sender.email)}
             style={{ width: 18, height: 18, cursor: "pointer", accentColor: TEAL, flexShrink: 0 }} />
           <div style={{ width: 40, height: 40, borderRadius: 10, background: `hsl(${sender.email.charCodeAt(0) * 7 % 360},55%,92%)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "#475569", flexShrink: 0 }}>
@@ -524,14 +525,16 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
             </div>
             <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sender.email}</div>
           </div>
-          <div style={{ textAlign: "center", flexShrink: 0 }}>
-            <div style={{ fontWeight: 700, fontSize: 20, color: "#1e293b" }}>{sender.count.toLocaleString()}</div>
-            <div style={{ fontSize: 11, color: "#94a3b8" }}>emails</div>
-          </div>
-          <div style={{ textAlign: "center", flexShrink: 0 }}>
-            <div style={{ fontWeight: 600, fontSize: 14, color: "#475569" }}>{formatSize(sender.sizeMb)}</div>
-            <div style={{ fontSize: 11, color: "#94a3b8" }}>storage</div>
-          </div>
+          {!isMobile && <>
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontWeight: 700, fontSize: 20, color: "#1e293b" }}>{sender.count.toLocaleString()}</div>
+              <div style={{ fontSize: 11, color: "#94a3b8" }}>emails</div>
+            </div>
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontWeight: 600, fontSize: 14, color: "#475569" }}>{formatSize(sender.sizeMb)}</div>
+              <div style={{ fontSize: 11, color: "#94a3b8" }}>storage</div>
+            </div>
+          </>}
           <button onClick={loadSample} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 18, padding: "4px 8px" }}>
             {expanded ? "▲" : "▼"}
           </button>
@@ -547,6 +550,14 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
             Delete
           </button>
         </div>
+        {/* Row 2 (mobile only): count + size */}
+        {isMobile && (
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10, paddingLeft: 72 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#1e293b" }}>{sender.count.toLocaleString()} emails</span>
+            <span style={{ fontSize: 12, color: "#94a3b8" }}>·</span>
+            <span style={{ fontSize: 13, color: "#475569" }}>{formatSize(sender.sizeMb)}</span>
+          </div>
+        )}
 
         {expanded && (
           <div style={{ marginTop: 14, padding: "12px 14px", background: "#f8fafc", borderRadius: 8, borderLeft: `3px solid ${TEAL}` }}>
