@@ -17,6 +17,108 @@ const formatSize = (mb) => mb >= 1000 ? `${(mb / 1000).toFixed(1)} GB` : `${mb.t
 
 // ─── Connect Email Step ───────────────────────────────────────────────────────
 
+// ─── App Password Instructions per provider ───────────────────────────────────
+
+const APP_PASSWORD_GUIDES = {
+  "gmail.com": {
+    name: "Gmail",
+    icon: "📧",
+    tip: "Gmail requires an App Password — not your regular Google password.",
+    steps: [
+      { label: "Go to your Google Account", url: "https://myaccount.google.com/apppasswords", urlLabel: "myaccount.google.com/apppasswords" },
+      { label: "Under \"How you sign in to Google\", make sure 2-Step Verification is ON" },
+      { label: "Click \"App passwords\" → select app \"Mail\" → select device → Generate" },
+      { label: "Copy the 16-character password and paste it above" },
+    ],
+    note: 'Alternatively, use the "Sign in with Google" tab — no App Password needed.',
+  },
+  "googlemail.com": "gmail.com",
+  "yahoo.com": {
+    name: "Yahoo Mail",
+    icon: "📧",
+    tip: "Yahoo requires an App Password — not your regular Yahoo password.",
+    steps: [
+      { label: "Go to Yahoo Account Security", url: "https://login.yahoo.com/account/security", urlLabel: "login.yahoo.com/account/security" },
+      { label: "Scroll to \"App passwords\" and click \"Generate app password\"" },
+      { label: "Select \"Other app\", type Zenboxie, click Generate" },
+      { label: "Copy the password and paste it above" },
+    ],
+  },
+  "outlook.com": {
+    name: "Outlook",
+    icon: "📧",
+    tip: "Outlook requires an App Password if you have 2-step verification enabled.",
+    steps: [
+      { label: "Go to Microsoft Account Security", url: "https://account.microsoft.com/security", urlLabel: "account.microsoft.com/security" },
+      { label: "Click \"Advanced security options\"" },
+      { label: "Under \"App passwords\", click \"Create a new app password\"" },
+      { label: "Copy the generated password and paste it above" },
+    ],
+  },
+  "hotmail.com": "outlook.com",
+  "live.com": "outlook.com",
+  "icloud.com": {
+    name: "iCloud Mail",
+    icon: "📧",
+    tip: "iCloud requires an App-Specific Password — not your Apple ID password.",
+    steps: [
+      { label: "Go to Apple ID", url: "https://appleid.apple.com", urlLabel: "appleid.apple.com" },
+      { label: "Sign in → click your name → \"Sign-In & Security\"" },
+      { label: "Click \"App-Specific Passwords\" → \"+ Generate an app-specific password\"" },
+      { label: "Label it Zenboxie, click Create, copy the password and paste it above" },
+    ],
+  },
+  "me.com": "icloud.com",
+  "mac.com": "icloud.com",
+};
+
+function getAppPasswordGuide(email) {
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (!domain) return null;
+  const entry = APP_PASSWORD_GUIDES[domain];
+  if (!entry) return null;
+  // Handle alias references like "googlemail.com" → "gmail.com"
+  if (typeof entry === "string") return APP_PASSWORD_GUIDES[entry];
+  return entry;
+}
+
+function AppPasswordHint({ email, error }) {
+  const [open, setOpen] = useState(false);
+  const guide = getAppPasswordGuide(email);
+
+  // Only show if it looks like an auth failure
+  const isAuthError = error && /auth|login|password|credentials|535|534|530/i.test(error);
+  if (!guide || !isAuthError) return null;
+
+  return (
+    <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, overflow: "hidden", fontSize: 13 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}
+      >
+        <span style={{ fontWeight: 600, color: "#92400e" }}>💡 {guide.name} requires an App Password — tap to see how</span>
+        <span style={{ fontSize: 16, color: "#92400e", transform: open ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
+      </button>
+      {open && (
+        <div style={{ padding: "0 14px 14px", color: "#78350f", lineHeight: 1.7 }}>
+          <p style={{ margin: "0 0 10px", color: "#92400e" }}>{guide.tip}</p>
+          <ol style={{ margin: 0, paddingLeft: 20 }}>
+            {guide.steps.map((step, i) => (
+              <li key={i} style={{ marginBottom: 6 }}>
+                {step.label}
+                {step.url && (
+                  <> → <a href={step.url} target="_blank" rel="noreferrer" style={{ color: TEAL_DARK, fontWeight: 600 }}>{step.urlLabel}</a></>
+                )}
+              </li>
+            ))}
+          </ol>
+          {guide.note && <p style={{ margin: "10px 0 0", fontStyle: "italic", color: "#92400e" }}>{guide.note}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const ConnectStep = ({ onConnect }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -137,6 +239,7 @@ const ConnectStep = ({ onConnect }) => {
                   </div>
                 )}
                 {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
+                <AppPasswordHint email={email} error={error} />
                 <button onClick={handleImapConnect} disabled={loading}
                   style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 4px 14px rgba(12,184,182,0.35)" }}>
                   {loading ? <><Spinner /> Connecting...</> : "Connect Email"}
