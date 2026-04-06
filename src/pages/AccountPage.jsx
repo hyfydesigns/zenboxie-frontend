@@ -121,6 +121,12 @@ export default function AccountPage() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {!isMobile && <span style={{ fontSize: 13, color: "#64748b" }}>{user?.email}</span>}
           <button
+            onClick={() => navigate("/help")}
+            style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+          >
+            ❓ Help
+          </button>
+          <button
             onClick={() => navigate("/")}
             style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
           >
