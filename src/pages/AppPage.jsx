@@ -1020,6 +1020,14 @@ export default function AppPage() {
   useEffect(() => {
     // 1. Handle OAuth popup callback (sessionId in URL query param)
     const params = new URLSearchParams(window.location.search);
+
+    // If ?connect=1 is present, go straight to connect step
+    if (params.get("connect")) {
+      window.history.replaceState({}, "", window.location.pathname);
+      setPhase("connect");
+      return;
+    }
+
     const urlSessionId = params.get("sessionId");
     if (urlSessionId) {
       window.history.replaceState({}, "", window.location.pathname);

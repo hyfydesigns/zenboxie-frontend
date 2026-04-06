@@ -202,7 +202,7 @@ export default function AccountPage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <h2 style={{ fontSize: 15, fontWeight: 700, color: "#0f2a2a", margin: 0 }}>Connected email accounts</h2>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/?connect=1")}
             style={{ fontSize: 13, color: TEAL_DARK, fontWeight: 600, padding: "6px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", cursor: "pointer" }}
           >
             + Add account
@@ -218,7 +218,7 @@ export default function AccountPage() {
             <span style={{ fontSize: 36 }}>📭</span>
             <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>
               No connected accounts yet.<br />
-              <button onClick={() => navigate("/")} style={{ background: "none", border: "none", color: TEAL_DARK, fontWeight: 600, cursor: "pointer", fontSize: 14 }}>Connect your first email →</button>
+              <button onClick={() => navigate("/?connect=1")} style={{ background: "none", border: "none", color: TEAL_DARK, fontWeight: 600, cursor: "pointer", fontSize: 14 }}>Connect your first email →</button>
             </p>
           </div>
         ) : (
