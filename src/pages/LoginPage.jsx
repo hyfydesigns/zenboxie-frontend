@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError(""); setUnverifiedEmail(null); setLoading(true);
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/account");
     } catch (err) {
       if (err.emailNotVerified) {
         setUnverifiedEmail(err.email || email);
