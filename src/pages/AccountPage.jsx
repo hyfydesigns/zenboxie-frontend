@@ -226,14 +226,15 @@ export default function AccountPage() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {tier === "FREE" ? (
-              <Link to="/pricing" style={{ padding: "9px 18px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", boxShadow: "0 4px 12px rgba(12,184,182,0.3)" }}>
-                Upgrade to Pro →
-              </Link>
-            ) : (
+            {tier !== "FREE" && (
               <button onClick={handlePortal} style={{ padding: "9px 18px", borderRadius: 10, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
                 Manage subscription
               </button>
+            )}
+            {tier !== "PREMIUM" && (
+              <Link to="/pricing" style={{ padding: "9px 18px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", boxShadow: "0 4px 12px rgba(12,184,182,0.3)" }}>
+                {tier === "FREE" ? "Upgrade to Pro →" : "Upgrade to Premium →"}
+              </Link>
             )}
           </div>
         </div>
