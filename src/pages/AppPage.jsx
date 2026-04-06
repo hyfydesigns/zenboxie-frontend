@@ -92,10 +92,16 @@ const ConnectStep = ({ onConnect }) => {
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdfd 0%, #e6f9f9 50%, #f8fafc 100%)" }}>
+      <header style={{ background: "#fff", borderBottom: `1px solid ${TEAL_MID}`, padding: "0 24px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(12,184,182,0.08)" }}>
+        <ZenboxieWordmark size="sm" />
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <a href="/help" style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>❓ Help</a>
+          <a href="/account" style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>👤 Account</a>
+        </div>
+      </header>
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "48px 20px" }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <ZenboxieWordmark size="lg" />
-          <p style={{ color: "#64748b", marginTop: 2, fontSize: 15, lineHeight: 1.6 }}>
+          <p style={{ color: "#64748b", margin: 0, fontSize: 15, lineHeight: 1.6 }}>
             Hi <strong>{user?.email}</strong>!<br />
             Connect an email account to analyze and bulk-clean your inbox.
           </p>
