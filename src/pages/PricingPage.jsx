@@ -243,7 +243,7 @@ export default function PricingPage() {
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div
             style={{ display: "flex", justifyContent: "center", marginBottom: 12, cursor: "pointer" }}
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
           >
             <ZenboxieLogo size={56} />
           </div>
@@ -330,7 +330,7 @@ export default function PricingPage() {
         {/* Back link */}
         <div style={{ textAlign: "center", marginTop: 40 }}>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             style={{
               background: "transparent",
               border: "none",
