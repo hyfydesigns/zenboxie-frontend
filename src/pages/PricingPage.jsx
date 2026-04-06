@@ -31,7 +31,7 @@ const PLANS = [
   {
     tier: "PRO",
     name: "Pro",
-    price: "$7",
+    price: "$5",
     period: "/month",
     description: "For power users who mean business",
     cta: "Upgrade to Pro",
@@ -59,7 +59,7 @@ const PLANS = [
   {
     tier: "PREMIUM",
     name: "Premium",
-    price: "$14",
+    price: "$10",
     period: "/month",
     description: "Everything, plus AI and team features",
     cta: "Upgrade to Premium",
