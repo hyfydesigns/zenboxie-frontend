@@ -278,30 +278,34 @@ export default function AccountPage() {
             {accounts.map((account) => {
               const colors = PROVIDER_COLOR[account.provider] || PROVIDER_COLOR.IMAP;
               return (
-                <div key={account.id} style={{ ...cardStyle, display: "flex", alignItems: "center", gap: 14, padding: "16px 20px" }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 10, background: colors.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0, border: `1px solid ${colors.border}` }}>
-                    {account.provider === "GMAIL" ? "🔐" : account.provider === "OUTLOOK" ? "📘" : "✉️"}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, color: "#1e293b", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{account.email}</div>
-                    <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <span style={{ padding: "1px 7px", borderRadius: 100, background: colors.bg, color: colors.text, border: `1px solid ${colors.border}`, fontWeight: 600 }}>
-                        {PROVIDER_LABEL[account.provider]}
-                      </span>
-                      <span>Last used {timeAgo(account.lastUsedAt)}</span>
+                <div key={account.id} style={{ ...cardStyle, padding: "14px 16px" }}>
+                  {/* Row 1: icon + email + provider/last used */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 10, background: colors.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0, border: `1px solid ${colors.border}` }}>
+                      {account.provider === "GMAIL" ? "🔐" : account.provider === "OUTLOOK" ? "📘" : "✉️"}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, color: "#1e293b", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{account.email}</div>
+                      <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <span style={{ padding: "1px 7px", borderRadius: 100, background: colors.bg, color: colors.text, border: `1px solid ${colors.border}`, fontWeight: 600 }}>
+                          {PROVIDER_LABEL[account.provider]}
+                        </span>
+                        <span>Last used {timeAgo(account.lastUsedAt)}</span>
+                      </div>
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                  {/* Row 2: buttons */}
+                  <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                     <button
                       onClick={() => navigate(`/?accountId=${account.id}`)}
-                      style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+                      style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
                     >
                       Open Inbox
                     </button>
                     <button
                       onClick={() => handleDisconnect(account.id, account.email)}
                       disabled={disconnecting === account.id}
-                      style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontSize: 13, fontWeight: 600, cursor: disconnecting === account.id ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 6 }}
+                      style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontSize: 13, fontWeight: 600, cursor: disconnecting === account.id ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                     >
                       {disconnecting === account.id ? <Spinner color="#dc2626" size={12} /> : null}
                       {disconnecting === account.id ? "Removing…" : "Disconnect"}
