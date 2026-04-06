@@ -910,16 +910,16 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
       )}
 
       <div style={{ padding: isMobile ? "16px 12px" : 24, maxWidth: 860, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 12, marginBottom: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: isMobile ? 8 : 12, marginBottom: 20 }}>
           {[
-            { label: "Unique Senders", value: senders.length, icon: "👥", color: "#ede9fe", iconColor: "#7c3aed" },
-            { label: "Total Emails", value: totalEmails.toLocaleString(), icon: "📧", color: TEAL_LIGHT, iconColor: TEAL_DARK },
-            { label: "Total Size", value: formatSize(totalSize), icon: "💾", color: "#fef3c7", iconColor: "#b45309" },
+            { label: "Unique Senders", value: senders.length, icon: "👥", color: "#ede9fe" },
+            { label: "Total Emails", value: totalEmails.toLocaleString(), icon: "📧", color: TEAL_LIGHT },
+            { label: "Total Size", value: formatSize(totalSize), icon: "💾", color: "#fef3c7" },
           ].map((s) => (
-            <div key={s.label} style={{ background: "#fff", borderRadius: 14, padding: "18px 20px", border: `1px solid ${TEAL_MID}`, boxShadow: "0 2px 8px rgba(12,184,182,0.06)" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, marginBottom: 10 }}>{s.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 24, color: "#0f2a2a" }}>{s.value}</div>
-              <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{s.label}</div>
+            <div key={s.label} style={{ background: "#fff", borderRadius: isMobile ? 10 : 14, padding: isMobile ? "10px 10px" : "18px 20px", border: `1px solid ${TEAL_MID}`, boxShadow: "0 2px 8px rgba(12,184,182,0.06)" }}>
+              {!isMobile && <div style={{ width: 36, height: 36, borderRadius: 8, background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, marginBottom: 10 }}>{s.icon}</div>}
+              <div style={{ fontWeight: 700, fontSize: isMobile ? 16 : 24, color: "#0f2a2a" }}>{s.value}</div>
+              <div style={{ fontSize: isMobile ? 10 : 12, color: "#94a3b8", marginTop: 2, lineHeight: 1.3 }}>{s.label}</div>
             </div>
           ))}
         </div>
