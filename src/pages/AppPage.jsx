@@ -605,8 +605,8 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
       </div>
 
       {confirming && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 20, padding: 32, maxWidth: 420, width: "100%", boxShadow: "0 24px 64px rgba(0,0,0,0.18)" }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px 16px" }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: 32, maxWidth: 420, width: "100%", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", margin: "0 auto" }}>
             <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 26 }}>🗑️</div>
             <h3 style={{ fontFamily: "'Playfair Display', serif", textAlign: "center", fontSize: 22, margin: "0 0 12px", color: "#0f2a2a" }}>Confirm Deletion</h3>
             <p style={{ textAlign: "center", color: "#475569", fontSize: 14, lineHeight: 1.7 }}>
