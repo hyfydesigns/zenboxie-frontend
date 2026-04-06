@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { apiCall } from "../api";
 import { ZenboxieWordmark, Spinner, TEAL, TEAL_DARK, TEAL_LIGHT, TEAL_MID, GlobalStyles } from "../components/ui";
 
 export default function RegisterPage() {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [registered, setRegistered] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +23,7 @@ export default function RegisterPage() {
     setError(""); setLoading(true);
     try {
       await register(email, password);
-      navigate("/");
+      setRegistered(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -28,11 +31,67 @@ export default function RegisterPage() {
     }
   };
 
+  const handleResend = async () => {
+    setResendLoading(true);
+    try {
+      await apiCall("/user/resend-verification", { method: "POST" });
+      setResendSent(true);
+    } catch (_) {}
+    finally { setResendLoading(false); }
+  };
+
   const inputStyle = {
     width: "100%", padding: "11px 14px", marginTop: 6, borderRadius: 10,
     border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none",
     boxSizing: "border-box", fontFamily: "inherit", transition: "border-color 0.2s",
   };
+
+  if (registered) {
+    return (
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdfd 0%, #e6f9f9 50%, #f8fafc 100%)", fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}>
+        <GlobalStyles />
+        <div style={{ maxWidth: 440, margin: "0 auto", padding: "48px 20px" }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <ZenboxieWordmark size="lg" />
+          </div>
+          <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 8px 40px rgba(12,184,182,0.1)", border: `1px solid ${TEAL_MID}`, padding: 40, textAlign: "center" }}>
+            <div style={{ fontSize: 52, marginBottom: 16 }}>📧</div>
+            <h2 style={{ margin: "0 0 12px", fontSize: 22, fontWeight: 800, color: "#0f2a2a", fontFamily: "'Playfair Display', serif" }}>
+              Check your inbox
+            </h2>
+            <p style={{ margin: "0 0 8px", fontSize: 15, color: "#475569", lineHeight: 1.7 }}>
+              We sent an activation link to:
+            </p>
+            <p style={{ margin: "0 0 24px", fontSize: 15, fontWeight: 700, color: "#0f2a2a" }}>
+              {email}
+            </p>
+            <p style={{ margin: "0 0 28px", fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>
+              Click the link in the email to activate your account. The link expires in 24 hours.
+            </p>
+            <div style={{ background: TEAL_LIGHT, border: `1px solid ${TEAL_MID}`, borderRadius: 10, padding: "14px 18px", marginBottom: 24 }}>
+              <p style={{ margin: 0, fontSize: 13, color: "#0a5f5e" }}>
+                💡 Don't see it? Check your spam or junk folder.
+              </p>
+            </div>
+            {!resendSent ? (
+              <button
+                onClick={handleResend}
+                disabled={resendLoading}
+                style={{ background: "none", border: "none", color: TEAL_DARK, fontWeight: 600, fontSize: 14, cursor: "pointer", textDecoration: "underline" }}
+              >
+                {resendLoading ? "Sending..." : "Resend activation email"}
+              </button>
+            ) : (
+              <p style={{ color: "#16a34a", fontWeight: 600, fontSize: 14 }}>✓ Email resent!</p>
+            )}
+            <p style={{ marginTop: 20, fontSize: 14, color: "#64748b" }}>
+              <Link to="/login" style={{ color: TEAL_DARK, fontWeight: 600, textDecoration: "none" }}>← Back to sign in</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdfd 0%, #e6f9f9 50%, #f8fafc 100%)", fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}>

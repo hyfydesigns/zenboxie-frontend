@@ -24,10 +24,19 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const data = await apiCall("/user/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
+    let data;
+    try {
+      data = await apiCall("/user/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+    } catch (err) {
+      // Attach emailNotVerified flag so LoginPage can show the verify screen
+      if (err.status === 403) {
+        err.emailNotVerified = true;
+      }
+      throw err;
+    }
     setToken(data.accessToken);
     localStorage.setItem("zenboxie_refresh", data.refreshToken);
     setUser(data.user);
