@@ -891,12 +891,12 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
           </button>
         </div>
         {isMobile && (
-          <div style={{ width: "100%", display: "flex", gap: 6, paddingBottom: 8, overflowX: "auto" }}>
-            <button onClick={() => navigate("/autoclean")} style={{ padding: "5px 10px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>🕐 Auto-Clean</button>
-            <button onClick={() => navigate("/retention")} style={{ padding: "5px 10px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>🗂 Retention</button>
-            <button onClick={() => navigate("/team")} style={{ padding: "5px 10px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>👥 Team</button>
-            <button onClick={() => navigate("/help")} style={{ padding: "5px 10px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>❓ Help</button>
-            <button onClick={() => navigate("/account")} style={{ padding: "5px 10px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>👤 Account</button>
+          <div style={{ width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, paddingBottom: 8 }}>
+            <button onClick={() => navigate("/autoclean")} style={{ padding: "5px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🕐 Auto-Clean</button>
+            <button onClick={() => navigate("/retention")} style={{ padding: "5px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>🗂 Retention</button>
+            <button onClick={() => navigate("/team")} style={{ padding: "5px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>👥 Team</button>
+            <button onClick={() => navigate("/help")} style={{ padding: "5px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>❓ Help</button>
+            <button onClick={() => navigate("/account")} style={{ padding: "5px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>👤 Account</button>
             <span style={{ fontSize: 12, color: "#94a3b8", alignSelf: "center", marginLeft: 4, whiteSpace: "nowrap" }}>{email}</span>
           </div>
         )}
