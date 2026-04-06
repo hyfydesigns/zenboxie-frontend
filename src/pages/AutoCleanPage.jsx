@@ -261,7 +261,7 @@ export default function AutoCleanPage() {
         {/* Header */}
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
-            <div style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
+            <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
               <ZenboxieLogo size={44} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -273,7 +273,7 @@ export default function AutoCleanPage() {
               </p>
             </div>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate(-1)}
               style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
             >
               ← Back to App

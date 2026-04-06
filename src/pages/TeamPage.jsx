@@ -152,12 +152,12 @@ export default function TeamPage() {
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           {/* Header */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
-            <div style={{ cursor: "pointer" }} onClick={() => navigate("/")}><ZenboxieLogo size={44} /></div>
+            <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}><ZenboxieLogo size={44} /></div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <h1 style={{ margin: 0, fontSize: isMobile ? 20 : 26, fontWeight: 800, color: "#0f2a2a", fontFamily: "'Playfair Display', serif" }}>Team Seats</h1>
               <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Invite up to {maxMembers || "—"} colleagues to share your Premium plan.</p>
             </div>
-            <button onClick={() => navigate("/")} style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← Back</button>
+            <button onClick={() => navigate(-1)} style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← Back</button>
           </div>
 
           {/* Pending invites for current user (invitee view) */}

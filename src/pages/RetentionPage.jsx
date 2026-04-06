@@ -187,12 +187,12 @@ export default function RetentionPage() {
       <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdfc 0%, #fff 60%)", fontFamily: "'DM Sans', sans-serif", padding: isMobile ? "24px 16px" : "40px 24px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
-            <div style={{ cursor: "pointer" }} onClick={() => navigate("/")}><ZenboxieLogo size={44} /></div>
+            <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}><ZenboxieLogo size={44} /></div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <h1 style={{ margin: 0, fontSize: isMobile ? 20 : 26, fontWeight: 800, color: "#0f2a2a", fontFamily: "'Playfair Display', serif" }}>Retention Rules</h1>
               <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Keep only N recent emails per sender — auto-delete the rest on a schedule.</p>
             </div>
-            <button onClick={() => navigate("/")} style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← Back</button>
+            <button onClick={() => navigate(-1)} style={{ background: "transparent", border: `1.5px solid ${TEAL_MID}`, color: TEAL_DARK, borderRadius: 8, padding: "8px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>← Back</button>
           </div>
 
           {!hasAccess
