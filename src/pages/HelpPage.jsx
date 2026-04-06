@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { TEAL, TEAL_DARK, TEAL_LIGHT, TEAL_MID, GlobalStyles, ZenboxieLogo, useIsMobile } from "../components/ui";
 
 const SECTIONS = [
@@ -388,6 +388,10 @@ export default function HelpPage() {
           <a href="mailto:support@zenboxie.com" style={{ color: TEAL_DARK, fontWeight: 600, textDecoration: "none" }}>
             support@zenboxie.com
           </a>
+          <div style={{ marginTop: 12, display: "flex", justifyContent: "center", gap: 20 }}>
+            <Link to="/privacy" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 12 }}>Privacy Policy</Link>
+            <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none", fontSize: 12 }}>Terms of Service</Link>
+          </div>
         </div>
       </div>
     </>
