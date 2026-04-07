@@ -70,6 +70,12 @@ export default function AccountPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const inboxMenuRef = useRef(null);
 
   useEffect(() => {
@@ -129,6 +135,27 @@ export default function AccountPage() {
       showToast(err.message, "error");
     } finally {
       setDisconnecting(null);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setPasswordError("");
+    if (!currentPassword) return setPasswordError("Current password is required.");
+    if (newPassword.length < 8) return setPasswordError("New password must be at least 8 characters.");
+    if (newPassword !== confirmPassword) return setPasswordError("Passwords do not match.");
+    setPasswordLoading(true);
+    try {
+      await apiCall("/user/change-password", {
+        method: "POST",
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      setShowPasswordForm(false);
+      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+      showToast("Password updated successfully.");
+    } catch (err) {
+      setPasswordError(err.message);
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -329,6 +356,62 @@ export default function AccountPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Change password */}
+        {user?.passwordHash !== false && (
+          <div style={{ marginTop: 28 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 700, color: "#0f2a2a", margin: 0 }}>Password</h2>
+              <button
+                onClick={() => { setShowPasswordForm(o => !o); setPasswordError(""); setCurrentPassword(""); setNewPassword(""); setConfirmPassword(""); }}
+                style={{ fontSize: 13, color: TEAL_DARK, fontWeight: 600, padding: "6px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", cursor: "pointer" }}
+              >
+                {showPasswordForm ? "Cancel" : "Change password"}
+              </button>
+            </div>
+            {showPasswordForm && (
+              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Current password</label>
+                  <input
+                    type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Your current password"
+                    style={{ width: "100%", padding: "10px 14px", marginTop: 6, borderRadius: 8, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                    onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>New password</label>
+                  <input
+                    type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="At least 8 characters"
+                    style={{ width: "100%", padding: "10px 14px", marginTop: 6, borderRadius: 8, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                    onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Confirm new password</label>
+                  <input
+                    type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat new password"
+                    style={{ width: "100%", padding: "10px 14px", marginTop: 6, borderRadius: 8, border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}
+                    onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+                    onKeyDown={(e) => e.key === "Enter" && handleChangePassword()}
+                  />
+                </div>
+                {passwordError && (
+                  <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {passwordError}</div>
+                )}
+                <button
+                  onClick={handleChangePassword} disabled={passwordLoading}
+                  style={{ padding: "11px", borderRadius: 10, border: "none", background: passwordLoading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 700, fontSize: 14, cursor: passwordLoading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: passwordLoading ? "none" : "0 4px 12px rgba(12,184,182,0.3)" }}
+                >
+                  {passwordLoading ? <><Spinner color="#fff" size={14} /> Updating…</> : "Update password"}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
