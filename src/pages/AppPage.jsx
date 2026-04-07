@@ -500,12 +500,14 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete }) => {
             {recommendations.slice(0, 10).map((r) => {
               const sender = senders.find((s) => s.email === r.email);
               return (
-                <div key={r.email} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", background: "#f8fafc", borderRadius: 8 }}>
-                  <span style={{ flex: 1, fontSize: 13, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sender?.name || r.email}</span>
-                  <span style={{ fontSize: 12, color: "#94a3b8", flexShrink: 0 }}>{r.reason}</span>
-                  <button onClick={() => onSelectForDelete(r.email)} style={{ padding: "4px 10px", borderRadius: 6, border: "none", background: "#fee2e2", color: "#dc2626", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
-                    Select
-                  </button>
+                <div key={r.email} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <span style={{ fontSize: 13, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{sender?.name || r.email}</span>
+                    <button onClick={() => onSelectForDelete(r.email)} style={{ padding: "4px 10px", borderRadius: 6, border: "none", background: "#fee2e2", color: "#dc2626", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
+                      Select
+                    </button>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{r.reason}</div>
                 </div>
               );
             })}
