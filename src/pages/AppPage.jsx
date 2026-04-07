@@ -431,14 +431,24 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete }) => {
 
   if (!result && !loading) {
     return (
-      <div style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81)", borderRadius: 14, padding: "20px 24px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-        <div>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 4 }}>🤖 AI Smart Filters</div>
-          <div style={{ color: "#a5b4fc", fontSize: 13 }}>Let Claude categorize your senders and surface what to delete.</div>
+      <div style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81)", borderRadius: 14, padding: "20px 24px", marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 4 }}>🤖 AI Smart Filters</div>
+            <div style={{ color: "#a5b4fc", fontSize: 13 }}>Let Claude categorize your senders and surface what to delete.</div>
+          </div>
+          <button onClick={run} style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: "#6366f1", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", flexShrink: 0 }}>
+            Analyze Inbox
+          </button>
         </div>
-        <button onClick={run} style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: "#6366f1", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", flexShrink: 0 }}>
-          Analyze Inbox
-        </button>
+        {error && (
+          <div style={{ marginTop: 12, padding: "10px 14px", background: "#fef2f2", borderRadius: 8, color: "#dc2626", fontSize: 13 }}>
+            ⚠️ {error.includes("not configured") || error.includes("503")
+              ? "AI analysis is not enabled on this server. Please set the ANTHROPIC_API_KEY environment variable."
+              : error}
+            <button onClick={run} style={{ marginLeft: 10, background: "none", border: "none", color: "#dc2626", fontWeight: 600, cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Retry</button>
+          </div>
+        )}
       </div>
     );
   }
