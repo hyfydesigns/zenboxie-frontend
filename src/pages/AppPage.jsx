@@ -498,7 +498,7 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete }) => {
           <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Recommended for cleanup</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {recommendations.slice(0, 10).map((r) => {
-              const sender = senders.find((s) => s.email === r.email);
+              const sender = senders.find((s) => s.email.toLowerCase() === r.email.toLowerCase().trim());
               return (
                 <div key={r.email} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
@@ -859,7 +859,13 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
   };
   const handleSelectAll = () => setSelected(new Set(filtered.map((s) => s.email)));
   const handleClearAll = () => setSelected(new Set());
-  const handleAiSelect = (email) => setSelected((prev) => new Set([...prev, email]));
+  const handleAiSelect = (email) => {
+    // Normalise the email from AI — find the matching sender by case-insensitive comparison
+    const normalized = email.toLowerCase().trim();
+    const match = senders.find((s) => s.email.toLowerCase() === normalized);
+    const resolvedEmail = match?.email ?? normalized;
+    setSelected((prev) => new Set([...prev, resolvedEmail]));
+  };
 
   const loadFolders = async () => {
     if (folders.length) return;
