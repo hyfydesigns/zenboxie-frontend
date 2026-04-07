@@ -421,6 +421,7 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails =
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   const run = async () => {
     setLoading(true); setError(null);
@@ -476,7 +477,6 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails =
   }
 
   const { categories = {}, recommendations = [], summary } = result;
-  const [activeCategory, setActiveCategory] = useState(null);
 
   // Build a lookup of email → category for filtering
   const emailToCategory = {};
