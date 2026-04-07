@@ -769,20 +769,31 @@ const BulkActionBar = ({ selected, senders, onBulkDelete, onSelectAll, onClearAl
 
   return (
     <>
-      <div style={isMobile ? { position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", boxShadow: "0 -4px 20px rgba(12,184,182,0.25)" } : { position: "sticky", top: 60, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", borderRadius: 12, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", boxShadow: "0 4px 20px rgba(12,184,182,0.25)" }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{selected.size} sender{selected.size > 1 ? "s" : ""} selected</span>
-          <span style={{ color: TEAL_MID, fontSize: 13, marginLeft: 10 }}>{totalEmails.toLocaleString()} emails · {formatSize(totalSize)}</span>
+      {isMobile ? (
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10, boxShadow: "0 -4px 20px rgba(12,184,182,0.25)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{selected.size} sender{selected.size > 1 ? "s" : ""} selected</span>
+            <span style={{ color: TEAL_MID, fontSize: 13 }}>{totalEmails.toLocaleString()} emails · {formatSize(totalSize)}</span>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={onSelectAll} style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 12, cursor: "pointer", fontWeight: 500 }}>Select All</button>
+            <button onClick={onClearAll} style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 12, cursor: "pointer", fontWeight: 500 }}>Clear</button>
+            <button onClick={() => { if (!gateBulkDelete()) return; setPermanent(false); setConfirming(true); }} style={{ flex: 2, padding: "8px 0", borderRadius: 8, border: "none", background: "#f97316", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>🗑 Move to Trash</button>
+            <button onClick={() => { if (!gateBulkDelete() || !gatePermanentDelete()) return; setPermanent(true); setConfirming(true); }} style={{ flex: 2, padding: "8px 0", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>💀 Delete Forever</button>
+          </div>
         </div>
-        <button onClick={onSelectAll} style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 13, cursor: "pointer", fontWeight: 500 }}>Select All</button>
-        <button onClick={onClearAll} style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 13, cursor: "pointer", fontWeight: 500 }}>Clear</button>
-        <button onClick={() => { if (!gateBulkDelete()) return; setPermanent(false); setConfirming(true); }} style={{ padding: "7px 16px", borderRadius: 8, border: "none", background: "#f97316", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>
-          🗑 Move to Trash
-        </button>
-        <button onClick={() => { if (!gateBulkDelete() || !gatePermanentDelete()) return; setPermanent(true); setConfirming(true); }} style={{ padding: "7px 16px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>
-          💀 Delete Forever
-        </button>
-      </div>
+      ) : (
+        <div style={{ position: "sticky", top: 60, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", borderRadius: 12, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", boxShadow: "0 4px 20px rgba(12,184,182,0.25)" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{selected.size} sender{selected.size > 1 ? "s" : ""} selected</span>
+            <span style={{ color: TEAL_MID, fontSize: 13, marginLeft: 10 }}>{totalEmails.toLocaleString()} emails · {formatSize(totalSize)}</span>
+          </div>
+          <button onClick={onSelectAll} style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 13, cursor: "pointer", fontWeight: 500 }}>Select All</button>
+          <button onClick={onClearAll} style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #1a4a4a", background: "none", color: TEAL_MID, fontSize: 13, cursor: "pointer", fontWeight: 500 }}>Clear</button>
+          <button onClick={() => { if (!gateBulkDelete()) return; setPermanent(false); setConfirming(true); }} style={{ padding: "7px 16px", borderRadius: 8, border: "none", background: "#f97316", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>🗑 Move to Trash</button>
+          <button onClick={() => { if (!gateBulkDelete() || !gatePermanentDelete()) return; setPermanent(true); setConfirming(true); }} style={{ padding: "7px 16px", borderRadius: 8, border: "none", background: "#dc2626", color: "#fff", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>💀 Delete Forever</button>
+        </div>
+      )}
 
       {confirming && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 1000, padding: 20, overflowY: "auto" }}>
