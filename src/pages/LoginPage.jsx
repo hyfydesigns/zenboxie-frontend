@@ -139,7 +139,7 @@ export default function LoginPage() {
           )}
         </div>
       </div>
-      <p style={{ textAlign: "center", marginTop: 32, marginBottom: 32, paddingBottom: 32, fontSize: 12, color: "#94a3b8" }}>
+      <p style={{ textAlign: "center", marginBottom: 32, paddingBottom: 32, fontSize: 12, color: "#94a3b8" }}>
         <Link to="/privacy" style={{ color: "#94a3b8", textDecoration: "none" }}>Privacy Policy</Link>
         {" · "}
         <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none" }}>Terms of Service</Link>
