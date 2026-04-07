@@ -476,6 +476,17 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails =
   }
 
   const { categories = {}, recommendations = [], summary } = result;
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  // Build a lookup of email → category for filtering
+  const emailToCategory = {};
+  Object.entries(categories).forEach(([cat, emails]) => {
+    emails?.forEach((e) => { emailToCategory[e.toLowerCase().trim()] = cat; });
+  });
+
+  const visibleRecs = recommendations
+    .filter((r) => !deletedEmails.has(r.email.toLowerCase().trim()))
+    .filter((r) => !activeCategory || emailToCategory[r.email.toLowerCase().trim()] === activeCategory);
 
   return (
     <div style={{ background: "#fff", border: "1.5px solid #e0e7ff", borderRadius: 14, padding: "20px 24px", marginBottom: 20 }}>
@@ -489,19 +500,27 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails =
         {Object.entries(categories).map(([cat, emails]) => {
           if (!emails?.length) return null;
           const meta = CATEGORY_META[cat] || { icon: "📧", label: cat, color: "#f1f5f9", text: "#475569" };
+          const isActive = activeCategory === cat;
           return (
-            <span key={cat} style={{ padding: "4px 12px", borderRadius: 100, background: meta.color, color: meta.text, fontSize: 12, fontWeight: 600 }}>
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(isActive ? null : cat)}
+              style={{ padding: "4px 12px", borderRadius: 100, background: isActive ? meta.text : meta.color, color: isActive ? "#fff" : meta.text, fontSize: 12, fontWeight: 600, border: `1.5px solid ${isActive ? meta.text : "transparent"}`, cursor: "pointer", fontFamily: "inherit" }}
+            >
               {meta.icon} {meta.label} ({emails.length})
-            </span>
+            </button>
           );
         })}
       </div>
 
-      {recommendations.length > 0 && (
+      {recommendations.filter((r) => !deletedEmails.has(r.email.toLowerCase().trim())).length > 0 && (
         <>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Recommended for cleanup</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span>{activeCategory ? `${CATEGORY_META[activeCategory]?.label ?? activeCategory} senders` : "Recommended for cleanup"}</span>
+            {activeCategory && <button onClick={() => setActiveCategory(null)} style={{ background: "none", border: "none", color: "#94a3b8", fontSize: 11, cursor: "pointer", fontFamily: "inherit" }}>Show all</button>}
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {recommendations.filter((r) => !deletedEmails.has(r.email.toLowerCase().trim())).slice(0, 10).map((r) => {
+            {visibleRecs.slice(0, 10).map((r) => {
               const sender = senders.find((s) => s.email.toLowerCase() === r.email.toLowerCase().trim());
               const resolvedEmail = sender?.email ?? r.email.toLowerCase().trim();
               const isSelected = selected.has(resolvedEmail);
