@@ -750,6 +750,7 @@ const SenderRow = ({ sender, sessionId, onDeleted, showToast, selected, onToggle
 const BulkActionBar = ({ selected, senders, onBulkDelete, onSelectAll, onClearAll }) => {
   const [confirming, setConfirming] = useState(false);
   const [permanent, setPermanent] = useState(false);
+  const isMobile = useIsMobile();
   const { gate: gateBulkDelete, prompt: bulkDeletePrompt } = useTierGate(
     "bulkDelete",
     "Bulk delete is a Pro feature. Upgrade to Pro to delete multiple senders at once."
@@ -768,7 +769,7 @@ const BulkActionBar = ({ selected, senders, onBulkDelete, onSelectAll, onClearAl
 
   return (
     <>
-      <div style={{ position: "sticky", top: 60, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", borderRadius: 12, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", boxShadow: "0 4px 20px rgba(12,184,182,0.25)", animation: "slideDown 0.2s ease" }}>
+      <div style={isMobile ? { position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", padding: "14px 16px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", boxShadow: "0 -4px 20px rgba(12,184,182,0.25)" } : { position: "sticky", top: 60, zIndex: 90, background: "linear-gradient(135deg, #0f2a2a, #0a3d3d)", borderRadius: 12, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", boxShadow: "0 4px 20px rgba(12,184,182,0.25)" }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <span style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{selected.size} sender{selected.size > 1 ? "s" : ""} selected</span>
           <span style={{ color: TEAL_MID, fontSize: 13, marginLeft: 10 }}>{totalEmails.toLocaleString()} emails · {formatSize(totalSize)}</span>
@@ -1034,7 +1035,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
         <TeamInviteBanner invite={user.pendingTeamInvite} onAccepted={() => window.location.reload()} />
       )}
 
-      <div style={{ padding: isMobile ? "16px 12px" : 24, maxWidth: 860, margin: "0 auto" }}>
+      <div style={{ padding: isMobile ? "16px 12px" : 24, maxWidth: 860, margin: "0 auto", paddingBottom: isMobile && selected.size > 0 ? 100 : undefined }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: isMobile ? 8 : 12, marginBottom: 20 }}>
           {[
             { label: "Unique Senders", value: senders.length, icon: "👥", color: "#ede9fe" },
