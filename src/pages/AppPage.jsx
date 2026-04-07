@@ -126,7 +126,11 @@ const ConnectStep = ({ onConnect }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("imap");
+  const [activeTab, setActiveTab] = useState(() => {
+    const stored = sessionStorage.getItem("connectTab");
+    if (stored) { sessionStorage.removeItem("connectTab"); return stored; }
+    return "imap";
+  });
   const { user, logout } = useAuth();
 
   const handleImapConnect = async () => {
@@ -1194,8 +1198,10 @@ export default function AppPage() {
 
     // If ?connect=1 is present, go straight to connect step
     if (params.get("connect")) {
+      const tab = params.get("tab"); // "google" or "imap"
       window.history.replaceState({}, "", window.location.pathname);
       setPhase("connect");
+      if (tab) sessionStorage.setItem("connectTab", tab);
       return;
     }
 

@@ -67,6 +67,7 @@ export default function AccountPage() {
   const [disconnecting, setDisconnecting] = useState(null);
   const [toast, setToast] = useState(null);
   const [inboxMenuOpen, setInboxMenuOpen] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -119,8 +120,10 @@ export default function AccountPage() {
       apiCall("/accounts"),
       apiCall("/billing/subscription"),
     ]).then(([accountsData, subData]) => {
-      setAccounts(accountsData.accounts || []);
+      const accs = accountsData.accounts || [];
+      setAccounts(accs);
       setSubscription(subData);
+      if (accs.length === 0) setShowWelcomeModal(true);
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
@@ -431,6 +434,42 @@ export default function AccountPage() {
           </button>
         </div>
       </div>
+
+      {/* Welcome / connect email modal */}
+      {showWelcomeModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: "32px 28px", maxWidth: 440, width: "100%", boxShadow: "0 24px 60px rgba(0,0,0,0.18)", textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>📬</div>
+            <h2 style={{ margin: "0 0 8px", fontSize: 22, fontWeight: 800, color: "#0f2a2a", fontFamily: "'Playfair Display', serif" }}>
+              Welcome to Zenboxie!
+            </h2>
+            <p style={{ margin: "0 0 24px", fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>
+              To get started, connect an email account.<br />
+              Zenboxie will scan your inbox and group emails by sender so you can bulk-delete in seconds.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <button
+                onClick={() => { setShowWelcomeModal(false); navigate("/?connect=1&tab=google"); }}
+                style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: "#4285F4", color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+              >
+                🔐 Connect Gmail
+              </button>
+              <button
+                onClick={() => { setShowWelcomeModal(false); navigate("/?connect=1&tab=imap"); }}
+                style={{ width: "100%", padding: "14px", borderRadius: 12, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+              >
+                ✉️ Connect Other Email
+              </button>
+            </div>
+            <button
+              onClick={() => setShowWelcomeModal(false)}
+              style={{ marginTop: 16, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer" }}
+            >
+              I'll do this later
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Delete account modal */}
       {showDeleteModal && (
