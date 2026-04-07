@@ -784,8 +784,8 @@ const BulkActionBar = ({ selected, senders, onBulkDelete, onSelectAll, onClearAl
       </div>
 
       {confirming && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 20, padding: 32, maxWidth: 460, width: "100%", boxShadow: "0 24px 64px rgba(0,0,0,0.18)" }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 1000, padding: 20, overflowY: "auto" }}>
+          <div style={{ background: "#fff", borderRadius: 20, padding: 28, maxWidth: 460, width: "100%", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", margin: "auto" }}>
             <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 26 }}>🗑️</div>
             <h3 style={{ fontFamily: "'Playfair Display', serif", textAlign: "center", fontSize: 22, margin: "0 0 12px", color: "#0f2a2a" }}>Bulk Delete Confirmation</h3>
             <p style={{ textAlign: "center", color: "#475569", fontSize: 14, lineHeight: 1.7 }}>
