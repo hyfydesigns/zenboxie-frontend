@@ -192,6 +192,21 @@ const SECTIONS = [
     ],
   },
   {
+    id: "account-settings",
+    icon: "⚙️",
+    title: "Account Settings",
+    items: [
+      {
+        q: "How do I change my password?",
+        a: `Go to your Account Dashboard (/account) and scroll down to the **Password** section. Click "Change password" to expand the form.\n\nEnter your current password, your new password (minimum 8 characters), confirm it, then click "Update password". You'll see a confirmation message when it's saved.\n\nNote: If you signed in with Google, you don't have a Zenboxie password — access is managed through your Google account.`,
+      },
+      {
+        q: "How do I delete my account?",
+        a: `Go to your Account Dashboard (/account) and scroll to the bottom. Click "Delete account" next to the Sign out button.\n\nA confirmation dialog will appear listing everything that will be permanently deleted:\n\n• Your Zenboxie account and profile\n• All connected email accounts\n• All Auto-Clean and Retention rules\n• All team invites\n• Your active subscription (cancelled immediately with no refund)\n\nType **DELETE** in the confirmation box and click "Delete my account". This action cannot be undone.`,
+      },
+    ],
+  },
+  {
     id: "privacy",
     icon: "🔒",
     title: "Privacy & Security",
