@@ -162,7 +162,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
-      <p style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#94a3b8", paddingBottom: 32, paddingLeft: 16, paddingRight: 16 }}>
+      <p style={{ textAlign: "center", marginTop: 2, fontSize: 12, color: "#94a3b8", paddingBottom: 32, paddingLeft: 16, paddingRight: 16 }}>
         By creating an account you agree to our{" "}
         <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none" }}>Terms of Service</Link>
         {" and "}
