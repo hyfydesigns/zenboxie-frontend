@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { GlobalStyles, ZenboxieLogo, useIsMobile, TEAL, TEAL_DARK, TEAL_LIGHT, TEAL_MID } from "../components/ui";
 
-const LAST_UPDATED = "April 3, 2026";
+const LAST_UPDATED = "April 7, 2026";
 
 function Section({ title, children }) {
   return (
@@ -114,19 +114,24 @@ export default function PrivacyPage() {
               </a>
               , including the Limited Use requirements.
             </P>
-            <P>Specifically:</P>
+            <P><strong>OAuth scopes requested:</strong> When you connect Gmail via "Sign in with Google", Zenboxie requests the following scope:</P>
+            <UL items={[
+              "https://mail.google.com/ — full mailbox access, used solely to read email metadata (sender, subject, date, size) and to delete emails at your explicit direction.",
+            ]} />
+            <P><strong>How we use Google data:</strong></P>
             <UL items={[
               "We only request access to Gmail data that is necessary to provide the service (reading sender metadata and deleting emails at your direction).",
               "We do not use Gmail data to serve advertisements.",
               "We do not allow humans to read your Gmail data unless you explicitly request support assistance and provide access.",
-              "We do not transfer Gmail data to third parties except as necessary to provide the service (e.g. our database provider).",
+              "We do not transfer Gmail data to third parties except as necessary to provide the service (e.g. our database provider for storing your encrypted OAuth token).",
               "We do not use Gmail data for any purpose other than providing and improving the Zenboxie email management service.",
+              "We store only your Gmail OAuth refresh token (encrypted with AES-256) to allow reconnecting to your inbox. We do not store email content.",
             ]} />
             <P>
               You can revoke Zenboxie's access to your Gmail account at any time by visiting{" "}
               <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" style={{ color: TEAL_DARK }}>
                 myaccount.google.com/permissions
-              </a>.
+              </a>. You can also disconnect your account from within Zenboxie at <a href="https://zenboxie.com/account" style={{ color: TEAL_DARK }}>zenboxie.com/account</a>.
             </P>
           </Section>
 
@@ -178,7 +183,8 @@ export default function PrivacyPage() {
           </Section>
 
           <Section title="10. Changes to This Policy">
-            <P>We may update this Privacy Policy from time to time. We will notify you of significant changes by posting the new policy on this page and updating the "Last updated" date. Continued use of the service after changes constitutes acceptance of the updated policy.</P>
+            <P>We may update this Privacy Policy from time to time. We will notify you of any changes by updating the "Last updated" date at the top of this page. This policy is always available at <a href="https://zenboxie.com/privacy" style={{ color: TEAL_DARK }}>zenboxie.com/privacy</a>.</P>
+            <P><strong>If we change how we access, use, or share Google user data</strong>, we will notify affected users by email before those changes take effect, in addition to updating this policy. Continued use of the service after notification constitutes acceptance of the updated policy.</P>
           </Section>
 
           <Section title="11. Contact Us">
