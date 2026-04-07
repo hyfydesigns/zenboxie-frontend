@@ -413,7 +413,7 @@ const CATEGORY_META = {
   important:   { icon: "⭐", label: "Important",     color: "#f0fdf4", text: "#166534" },
 };
 
-const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete }) => {
+const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails = new Set() }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -497,7 +497,7 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete }) => {
         <>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>Recommended for cleanup</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {recommendations.slice(0, 10).map((r) => {
+            {recommendations.filter((r) => !deletedEmails.has(r.email.toLowerCase().trim())).slice(0, 10).map((r) => {
               const sender = senders.find((s) => s.email.toLowerCase() === r.email.toLowerCase().trim());
               return (
                 <div key={r.email} style={{ padding: "8px 12px", background: "#f8fafc", borderRadius: 8 }}>
@@ -821,6 +821,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
   const [toast, setToast] = useState(null);
   const [selected, setSelected] = useState(new Set());
   const [bulkDeletingEmails, setBulkDeletingEmails] = useState(new Set());
+  const [deletedEmails, setDeletedEmails] = useState(new Set());
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [menuAccounts, setMenuAccounts] = useState([]);
   const { user } = useAuth();
@@ -853,6 +854,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
   const handleDeleted = (emailAddr) => {
     setSenders((prev) => prev.filter((s) => s.email !== emailAddr));
     setSelected((prev) => { const n = new Set(prev); n.delete(emailAddr); return n; });
+    setDeletedEmails((prev) => new Set([...prev, emailAddr.toLowerCase()]));
   };
   const handleToggleSelect = (emailAddr) => {
     setSelected((prev) => { const n = new Set(prev); n.has(emailAddr) ? n.delete(emailAddr) : n.add(emailAddr); return n; });
@@ -886,6 +888,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
         deleted += result.deleted || 0;
         freed += result.freedMb || 0;
         setSenders((prev) => prev.filter((s) => s.email !== senderEmail));
+        setDeletedEmails((prev) => new Set([...prev, senderEmail.toLowerCase()]));
         setBulkDeletingEmails((prev) => { const n = new Set(prev); n.delete(senderEmail); return n; });
       } catch {
         failed++;
@@ -1107,7 +1110,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
         </div>
 
         {showAiPanel && (
-          <AiFiltersPanel sessionId={sessionId} senders={senders} onSelectForDelete={handleAiSelect} />
+          <AiFiltersPanel sessionId={sessionId} senders={senders} onSelectForDelete={handleAiSelect} deletedEmails={deletedEmails} />
         )}
 
         {showAnalytics && (
