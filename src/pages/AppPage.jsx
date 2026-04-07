@@ -417,7 +417,7 @@ const CATEGORY_META = {
   important:   { icon: "⭐", label: "Important",     color: "#f0fdf4", text: "#166534" },
 };
 
-const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails = new Set(), selected = new Set() }) => {
+const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails = new Set(), selected = new Set(), bulkDeletingEmails = new Set() }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -505,15 +505,17 @@ const AiFiltersPanel = ({ sessionId, senders, onSelectForDelete, deletedEmails =
               const sender = senders.find((s) => s.email.toLowerCase() === r.email.toLowerCase().trim());
               const resolvedEmail = sender?.email ?? r.email.toLowerCase().trim();
               const isSelected = selected.has(resolvedEmail);
+              const isDeleting = bulkDeletingEmails.has(resolvedEmail);
               return (
-                <div key={r.email} style={{ padding: "8px 12px", background: isSelected ? "#f0fdf4" : "#f8fafc", borderRadius: 8, border: `1px solid ${isSelected ? "#86efac" : "transparent"}` }}>
+                <div key={r.email} style={{ padding: "8px 12px", background: isDeleting ? "#f1f5f9" : isSelected ? "#f0fdf4" : "#f8fafc", borderRadius: 8, border: `1px solid ${isDeleting ? "#e2e8f0" : isSelected ? "#86efac" : "transparent"}`, opacity: isDeleting ? 0.7 : 1 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                     <span style={{ fontSize: 13, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{sender?.name || r.email}</span>
                     <button
-                      onClick={() => onSelectForDelete(r.email)}
-                      style={{ padding: "4px 10px", borderRadius: 6, border: "none", background: isSelected ? "#16a34a" : "#fee2e2", color: isSelected ? "#fff" : "#dc2626", fontSize: 11, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}
+                      onClick={() => !isDeleting && onSelectForDelete(r.email)}
+                      disabled={isDeleting}
+                      style={{ padding: "4px 10px", borderRadius: 6, border: "none", background: isDeleting ? "#e2e8f0" : isSelected ? "#16a34a" : "#fee2e2", color: isDeleting ? "#94a3b8" : isSelected ? "#fff" : "#dc2626", fontSize: 11, fontWeight: 600, cursor: isDeleting ? "not-allowed" : "pointer", flexShrink: 0, display: "flex", alignItems: "center", gap: 5 }}
                     >
-                      {isSelected ? "✓ Selected" : "Select"}
+                      {isDeleting ? <><Spinner size={10} color="#94a3b8" /> Deleting…</> : isSelected ? "✓ Selected" : "Select"}
                     </button>
                   </div>
                   <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{r.reason}</div>
@@ -1135,7 +1137,7 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
         </div>
 
         {showAiPanel && (
-          <AiFiltersPanel sessionId={sessionId} senders={senders} onSelectForDelete={handleAiSelect} deletedEmails={deletedEmails} selected={selected} />
+          <AiFiltersPanel sessionId={sessionId} senders={senders} onSelectForDelete={handleAiSelect} deletedEmails={deletedEmails} selected={selected} bulkDeletingEmails={bulkDeletingEmails} />
         )}
 
         {showAnalytics && (
