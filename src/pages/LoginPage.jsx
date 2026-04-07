@@ -143,6 +143,8 @@ export default function LoginPage() {
         <Link to="/privacy" style={{ color: "#94a3b8", textDecoration: "none" }}>Privacy Policy</Link>
         {" · "}
         <Link to="/terms" style={{ color: "#94a3b8", textDecoration: "none" }}>Terms of Service</Link>
+        {" · "}
+        <Link to="/help" style={{ color: "#94a3b8", textDecoration: "none" }}>Help</Link>
       </p>
     </div>
   );
