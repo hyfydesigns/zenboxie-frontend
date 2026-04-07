@@ -199,6 +199,7 @@ const ConnectStep = ({ onConnect }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <a href="/help" style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>❓ Help</a>
           <a href="/account" style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>👤 Account</a>
+          <button onClick={logout} style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid #e2e8f0", background: "#fff", color: "#64748b", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Sign out</button>
         </div>
       </header>
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "48px 20px" }}>
