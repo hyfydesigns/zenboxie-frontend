@@ -16,11 +16,11 @@ const PLANS = [
     features: ["1 connected account", "Scan up to 500 emails", "3 deletions per day", "Move to trash", "CSV export"],
   },
   {
-    name: "Pro", price: "$7/mo", color: TEAL_LIGHT, text: TEAL_DARK, border: TEAL_MID, highlight: true,
+    name: "Pro", price: "$5/mo", color: TEAL_LIGHT, text: TEAL_DARK, border: TEAL_MID, highlight: true,
     features: ["Up to 3 accounts", "Unlimited scanning", "Unlimited deletions", "Permanent delete", "Bulk delete", "Auto-Clean", "AI Smart Filters"],
   },
   {
-    name: "Premium", price: "$14/mo", color: "#fef3c7", text: "#b45309", border: "#fde68a",
+    name: "Premium", price: "$10/mo", color: "#fef3c7", text: "#b45309", border: "#fde68a",
     features: ["Unlimited accounts", "Everything in Pro", "Retention rules", "Folder support", "3 team seats", "Priority support"],
   },
 ];
