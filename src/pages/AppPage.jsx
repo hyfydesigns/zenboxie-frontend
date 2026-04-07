@@ -887,7 +887,11 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
     const normalized = email.toLowerCase().trim();
     const match = senders.find((s) => s.email.toLowerCase() === normalized);
     const resolvedEmail = match?.email ?? normalized;
-    setSelected((prev) => new Set([...prev, resolvedEmail]));
+    setSelected((prev) => {
+      const n = new Set(prev);
+      if (n.has(resolvedEmail)) n.delete(resolvedEmail); else n.add(resolvedEmail);
+      return n;
+    });
   };
 
   const loadFolders = async () => {
