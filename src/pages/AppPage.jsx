@@ -308,7 +308,7 @@ const ScanningStep = ({ sessionId, email, folder = "INBOX", onDone, onError }) =
           setProcessed(data.processed); setTotal(data.total);
           setStatusText(`Analyzing ${data.processed.toLocaleString()} of ${data.total.toLocaleString()} emails...`);
         } else if (data.type === "done") {
-          es.close(); onDone(data.senders);
+          es.close(); onDone(data.senders, data.providerWarning);
         } else if (data.type === "error") {
           es.close(); onError(data.message);
         }
@@ -322,7 +322,7 @@ const ScanningStep = ({ sessionId, email, folder = "INBOX", onDone, onError }) =
           return res.text();
         })
         .then((text) => {
-          try { const data = JSON.parse(text); onDone(data.senders); }
+          try { const data = JSON.parse(text); onDone(data.senders, data.providerWarning); }
           catch { throw new Error("Invalid response from server"); }
         })
         .catch((err) => onError(err.message));
@@ -855,7 +855,7 @@ const BulkActionBar = ({ selected, senders, onBulkDelete, onSelectAll, onClearAl
 
 // ─── Inbox Dashboard ──────────────────────────────────────────────────────────
 
-const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, onLogout, onSwitchAccount, onAddAccount }) => {
+const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, onLogout, onSwitchAccount, onAddAccount, providerWarning }) => {
   const [senders, setSenders] = useState(initialSenders);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("count");
@@ -1081,6 +1081,12 @@ const InboxDashboard = ({ sessionId, email, provider, senders: initialSenders, o
       )}
 
       <div style={{ padding: isMobile ? "16px 12px" : 24, maxWidth: 860, margin: "0 auto", paddingBottom: isMobile && selected.size > 0 ? 100 : undefined }}>
+        {providerWarning && (
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 16, padding: "12px 14px", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, fontSize: 13, color: "#92400e" }}>
+            <span style={{ flexShrink: 0 }}>⚠️</span>
+            <span style={{ flex: 1 }}>{providerWarning}</span>
+          </div>
+        )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: isMobile ? 8 : 12, marginBottom: 20 }}>
           {[
             { label: "Unique Senders", value: senders.length, icon: "👥", color: "#ede9fe" },
@@ -1196,6 +1202,7 @@ export default function AppPage() {
   const [userEmail, setUserEmail] = useState("");
   const [provider, setProvider] = useState("");
   const [senders, setSenders] = useState([]);
+  const [providerWarning, setProviderWarning] = useState(null);
   const [scanError, setScanError] = useState("");
   const [reconnectError, setReconnectError] = useState("");
   const [scanFolder, setScanFolder] = useState("INBOX");
@@ -1319,7 +1326,7 @@ export default function AppPage() {
   const handleConnect = (email, prov, sid) => {
     setUserEmail(email); setProvider(prov); setSessionId(sid); setPhase("scanning");
   };
-  const handleScanDone = (data) => { setSenders(data); setPhase("inbox"); };
+  const handleScanDone = (data, warning) => { setSenders(data); setProviderWarning(warning || null); setPhase("inbox"); };
   const handleScanError = (msg) => { setScanError(msg); setPhase("error"); };
   const handleDisconnect = () => {
     sessionStorage.removeItem("inboxSessionId");
@@ -1359,7 +1366,7 @@ export default function AppPage() {
 
   if (phase === "connect") return <ConnectStep onConnect={handleConnect} />;
   if (phase === "scanning") return <ScanningStep sessionId={sessionId} email={userEmail} folder={scanFolder} onDone={handleScanDone} onError={handleScanError} />;
-  if (phase === "inbox") return <InboxDashboard sessionId={sessionId} email={userEmail} provider={provider} senders={senders} onLogout={handleDisconnect} onSwitchAccount={handleSwitchAccount} onAddAccount={handleAddAccount} />;
+  if (phase === "inbox") return <InboxDashboard sessionId={sessionId} email={userEmail} provider={provider} senders={senders} onLogout={handleDisconnect} onSwitchAccount={handleSwitchAccount} onAddAccount={handleAddAccount} providerWarning={providerWarning} />;
 
   // error phase
   return (

@@ -40,6 +40,10 @@ const SECTIONS = [
         a: `The Free plan scans the 500 most recent emails. Upgrade to Pro or Premium for unlimited scanning across your entire mailbox.`,
       },
       {
+        q: "Why does my Yahoo inbox only show 10,000 emails?",
+        a: `This is a limitation imposed by Yahoo's IMAP server — it only allows access to your 10,000 most recent emails per folder. This is not a Zenboxie restriction; it applies to all third-party email clients connecting to Yahoo via IMAP.\n\nZenboxie will scan all 10,000 emails it can access and display them grouped by sender. Emails older than the 10,000 most recent are not visible and cannot be deleted through Zenboxie.\n\nUnfortunately there is no workaround for this limit as it is enforced server-side by Yahoo.`,
+      },
+      {
         q: "Can I scan a specific folder?",
         a: `Yes, if you're on a Premium plan and connected via Email & Password. A folder selector appears above the sender list. Select any folder and click "Rescan" to analyse it. Gmail (Sign in with Google) uses labels instead of folders and scans the full inbox by default.`,
       },
