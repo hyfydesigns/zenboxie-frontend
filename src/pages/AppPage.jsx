@@ -1383,7 +1383,8 @@ export default function AppPage() {
   const handleScanError = (msg) => { setScanError(msg); setPhase("error"); };
   const handleDisconnect = () => {
     sessionStorage.removeItem("inboxSessionId");
-    setPhase("connect"); setSessionId(null); setUserEmail(""); setSenders([]); setScanError(""); setReconnectError("");
+    setSessionId(null); setUserEmail(""); setSenders([]); setScanError(""); setReconnectError("");
+    navigate("/account");
   };
   const handleSwitchAccount = async (accountId) => {
     try {
