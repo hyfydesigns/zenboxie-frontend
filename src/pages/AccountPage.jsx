@@ -380,10 +380,27 @@ export default function AccountPage() {
                     </button>
                   </div>
                   {reconnectErrors[account.id] && (
-                    <div style={{ marginTop: 8, padding: "8px 12px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", fontSize: 12, color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                      <span>⚠️ {reconnectErrors[account.id]}</span>
-                      <button onClick={() => handleOpenInbox(account.id)} style={{ background: "none", border: "none", color: "#dc2626", fontWeight: 700, fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}>Retry →</button>
-                    </div>
+                    reconnectErrors[account.id].startsWith("GMAIL_OAUTH_REMOVED") ? (
+                      <div style={{ marginTop: 8, padding: "12px 14px", background: "#fffbeb", borderRadius: 8, border: "1px solid #fde68a", fontSize: 13, color: "#92400e", lineHeight: 1.6 }}>
+                        <strong>⚠️ Action needed:</strong> This Gmail account was connected via Google Sign-In which is no longer supported.
+                        <br />
+                        Disconnect it below, then reconnect using <strong>Email &amp; Password</strong> with a <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer" style={{ color: "#92400e", fontWeight: 700 }}>Gmail App Password</a>.
+                        <div style={{ marginTop: 8 }}>
+                          <button
+                            onClick={() => handleDisconnect(account.id, account.email)}
+                            disabled={disconnecting === account.id}
+                            style={{ padding: "6px 16px", borderRadius: 7, border: "none", background: "#b45309", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}
+                          >
+                            {disconnecting === account.id ? <><Spinner color="#fff" size={10} /> Removing…</> : "Disconnect & reconnect →"}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ marginTop: 8, padding: "8px 12px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", fontSize: 12, color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span>⚠️ {reconnectErrors[account.id]}</span>
+                        <button onClick={() => handleOpenInbox(account.id)} style={{ background: "none", border: "none", color: "#dc2626", fontWeight: 700, fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}>Retry →</button>
+                      </div>
+                    )
                   )}
                 </div>
               );
