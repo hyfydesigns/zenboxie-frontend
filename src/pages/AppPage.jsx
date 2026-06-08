@@ -1257,6 +1257,7 @@ export default function AppPage() {
   const [reconnectError, setReconnectError] = useState("");
   const [scanFolder, setScanFolder] = useState("INBOX");
   const { logout, refreshUser, user: authUser } = useAuth();
+  const navigate = useNavigate();
 
   // Handle return from Stripe checkout — sync directly from Stripe, then refresh user
   useEffect(() => {
