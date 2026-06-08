@@ -22,54 +22,75 @@ const formatSize = (mb) => mb >= 1000 ? `${(mb / 1000).toFixed(1)} GB` : `${mb.t
 const APP_PASSWORD_GUIDES = {
   "gmail.com": {
     name: "Gmail",
-    icon: "📧",
-    tip: "Gmail requires an App Password — not your regular Google password.",
+    color: { bg: "#fffbeb", border: "#fde68a", text: "#92400e", dark: "#78350f" },
+    quickLink: { url: "https://myaccount.google.com/apppasswords", label: "Open App Passwords →" },
+    tip: "Gmail requires an App Password — your regular Google password won't work here.",
     steps: [
-      { label: "Go to your Google Account", url: "https://myaccount.google.com/apppasswords", urlLabel: "myaccount.google.com/apppasswords" },
-      { label: "Under \"How you sign in to Google\", make sure 2-Step Verification is ON" },
-      { label: "Click \"App passwords\" → select app \"Mail\" → select device → Generate" },
-      { label: "Copy the 16-character password and paste it above" },
+      { label: "Go to your Google Account App Passwords page", url: "https://myaccount.google.com/apppasswords", urlLabel: "myaccount.google.com/apppasswords" },
+      { label: "If prompted, sign in and make sure 2-Step Verification is ON (required by Google)" },
+      { label: 'Search for "Mail" or select "Other (Custom name)", type Zenboxie, then click Create' },
+      { label: "Copy the 16-character password shown and paste it into the App Password field above" },
     ],
-    note: 'Alternatively, use the "Sign in with Google" tab — no App Password needed.',
+    note: 'Tip: Use the "Sign in with Google" tab instead for a one-click connection — no App Password needed.',
   },
   "googlemail.com": "gmail.com",
   "yahoo.com": {
     name: "Yahoo Mail",
-    icon: "📧",
-    tip: "Yahoo requires an App Password — not your regular Yahoo password.",
+    color: { bg: "#fffbeb", border: "#fde68a", text: "#92400e", dark: "#78350f" },
+    quickLink: { url: "https://login.yahoo.com/account/security", label: "Open Yahoo Security →" },
+    tip: "Yahoo requires an App Password — your regular Yahoo password won't work here.",
     steps: [
       { label: "Go to Yahoo Account Security", url: "https://login.yahoo.com/account/security", urlLabel: "login.yahoo.com/account/security" },
-      { label: "Scroll to \"App passwords\" and click \"Generate app password\"" },
-      { label: "Select \"Other app\", type Zenboxie, click Generate" },
-      { label: "Copy the password and paste it above" },
+      { label: 'Scroll to "App passwords" and click "Generate app password"' },
+      { label: 'Select "Other app", type Zenboxie, click Generate' },
+      { label: "Copy the password shown and paste it into the App Password field above" },
     ],
   },
+  "ymail.com": "yahoo.com",
   "outlook.com": {
-    name: "Outlook",
-    icon: "📧",
-    tip: "Outlook requires an App Password if you have 2-step verification enabled.",
+    name: "Outlook / Hotmail",
+    color: { bg: "#eff6ff", border: "#bfdbfe", text: "#1d4ed8", dark: "#1e40af" },
+    quickLink: { url: "https://account.microsoft.com/security", label: "Open Microsoft Security →" },
+    tip: "Outlook requires an App Password when 2-step verification is enabled.",
     steps: [
       { label: "Go to Microsoft Account Security", url: "https://account.microsoft.com/security", urlLabel: "account.microsoft.com/security" },
-      { label: "Click \"Advanced security options\"" },
-      { label: "Under \"App passwords\", click \"Create a new app password\"" },
-      { label: "Copy the generated password and paste it above" },
+      { label: 'Click "Advanced security options"' },
+      { label: 'Under "App passwords", click "Create a new app password"' },
+      { label: "Copy the generated password and paste it into the App Password field above" },
     ],
   },
   "hotmail.com": "outlook.com",
   "live.com": "outlook.com",
+  "msn.com": "outlook.com",
   "icloud.com": {
     name: "iCloud Mail",
-    icon: "📧",
-    tip: "iCloud requires an App-Specific Password — not your Apple ID password.",
+    color: { bg: "#f0fdf4", border: "#bbf7d0", text: "#166534", dark: "#14532d" },
+    quickLink: { url: "https://appleid.apple.com", label: "Open Apple ID →" },
+    tip: "iCloud requires an App-Specific Password — your Apple ID password won't work here.",
     steps: [
-      { label: "Go to Apple ID", url: "https://appleid.apple.com", urlLabel: "appleid.apple.com" },
-      { label: "Sign in → click your name → \"Sign-In & Security\"" },
-      { label: "Click \"App-Specific Passwords\" → \"+ Generate an app-specific password\"" },
-      { label: "Label it Zenboxie, click Create, copy the password and paste it above" },
+      { label: "Go to your Apple ID account", url: "https://appleid.apple.com", urlLabel: "appleid.apple.com" },
+      { label: 'Sign in → click your name → "Sign-In & Security"' },
+      { label: 'Click "App-Specific Passwords" → "+ Generate an app-specific password"' },
+      { label: "Label it Zenboxie, click Create, then copy and paste the password above" },
     ],
   },
   "me.com": "icloud.com",
   "mac.com": "icloud.com",
+};
+
+// Known IMAP server hosts — auto-filled when email domain is recognised
+const IMAP_HOSTS = {
+  "gmail.com": "imap.gmail.com",
+  "googlemail.com": "imap.gmail.com",
+  "yahoo.com": "imap.mail.yahoo.com",
+  "ymail.com": "imap.mail.yahoo.com",
+  "outlook.com": "imap-mail.outlook.com",
+  "hotmail.com": "imap-mail.outlook.com",
+  "live.com": "imap-mail.outlook.com",
+  "msn.com": "imap-mail.outlook.com",
+  "icloud.com": "imap.mail.me.com",
+  "me.com": "imap.mail.me.com",
+  "mac.com": "imap.mail.me.com",
 };
 
 function getAppPasswordGuide(email) {
@@ -77,43 +98,93 @@ function getAppPasswordGuide(email) {
   if (!domain) return null;
   const entry = APP_PASSWORD_GUIDES[domain];
   if (!entry) return null;
-  // Handle alias references like "googlemail.com" → "gmail.com"
   if (typeof entry === "string") return APP_PASSWORD_GUIDES[entry];
   return entry;
 }
 
-function AppPasswordHint({ email, error }) {
-  const [open, setOpen] = useState(false);
-  const guide = getAppPasswordGuide(email);
+function getImapHost(email) {
+  const domain = email.split("@")[1]?.toLowerCase();
+  return domain ? (IMAP_HOSTS[domain] ?? null) : null;
+}
 
-  // Only show if it looks like an auth failure
+// Proactive guide — shows as soon as a known domain is typed
+function AppPasswordGuide({ email, onDismiss }) {
+  const [stepsOpen, setStepsOpen] = useState(false);
+  const guide = getAppPasswordGuide(email);
+  if (!guide) return null;
+  const c = guide.color;
+
+  return (
+    <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 12, overflow: "hidden", fontSize: 13 }}>
+      {/* Header row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 16 }}>🔑</span>
+          <span style={{ fontWeight: 700, color: c.text }}>
+            {guide.name} requires an App Password
+          </span>
+        </div>
+        <button onClick={onDismiss} aria-label="Dismiss" style={{ background: "none", border: "none", color: c.text, fontSize: 16, cursor: "pointer", lineHeight: 1, opacity: 0.6, padding: "0 2px" }}>✕</button>
+      </div>
+
+      {/* Quick explanation */}
+      <div style={{ padding: "0 14px 12px", color: c.dark, lineHeight: 1.6 }}>
+        <p style={{ margin: "0 0 10px" }}>{guide.tip}</p>
+
+        {/* Quick link button */}
+        {guide.quickLink && (
+          <a
+            href={guide.quickLink.url}
+            target="_blank"
+            rel="noreferrer"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 8, background: c.text, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", marginBottom: 10 }}
+          >
+            {guide.quickLink.label}
+          </a>
+        )}
+
+        {/* Expandable step-by-step */}
+        <button
+          onClick={() => setStepsOpen(o => !o)}
+          style={{ background: "none", border: "none", color: c.text, fontWeight: 600, fontSize: 13, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", gap: 4, fontFamily: "inherit" }}
+        >
+          <span style={{ fontSize: 11, display: "inline-block", transform: stepsOpen ? "rotate(90deg)" : "none", transition: "transform 0.2s" }}>▶</span>
+          {stepsOpen ? "Hide steps" : "Show step-by-step instructions"}
+        </button>
+
+        {stepsOpen && (
+          <ol style={{ margin: "10px 0 0", paddingLeft: 20, lineHeight: 1.8 }}>
+            {guide.steps.map((step, i) => (
+              <li key={i} style={{ marginBottom: 4 }}>
+                {step.label}
+                {step.url && (
+                  <> — <a href={step.url} target="_blank" rel="noreferrer" style={{ color: c.text, fontWeight: 600 }}>{step.urlLabel}</a></>
+                )}
+              </li>
+            ))}
+            {guide.note && (
+              <li style={{ listStyle: "none", marginTop: 8, fontStyle: "italic", color: c.text }}>{guide.note}</li>
+            )}
+          </ol>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Error-only hint — shown after a failed login attempt
+function AppPasswordErrorHint({ email, error }) {
+  const guide = getAppPasswordGuide(email);
   const isAuthError = error && /auth|login|password|credentials|535|534|530/i.test(error);
   if (!guide || !isAuthError) return null;
 
   return (
-    <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, overflow: "hidden", fontSize: 13 }}>
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}
-      >
-        <span style={{ fontWeight: 600, color: "#92400e" }}>💡 {guide.name} requires an App Password — tap to see how</span>
-        <span style={{ fontSize: 16, color: "#92400e", transform: open ? "rotate(45deg)" : "none", transition: "transform 0.2s" }}>+</span>
-      </button>
-      {open && (
-        <div style={{ padding: "0 14px 14px", color: "#78350f", lineHeight: 1.7 }}>
-          <p style={{ margin: "0 0 10px", color: "#92400e" }}>{guide.tip}</p>
-          <ol style={{ margin: 0, paddingLeft: 20 }}>
-            {guide.steps.map((step, i) => (
-              <li key={i} style={{ marginBottom: 6 }}>
-                {step.label}
-                {step.url && (
-                  <> → <a href={step.url} target="_blank" rel="noreferrer" style={{ color: TEAL_DARK, fontWeight: 600 }}>{step.urlLabel}</a></>
-                )}
-              </li>
-            ))}
-          </ol>
-          {guide.note && <p style={{ margin: "10px 0 0", fontStyle: "italic", color: "#92400e" }}>{guide.note}</p>}
-        </div>
+    <div style={{ padding: "10px 14px", background: "#fffbeb", borderRadius: 8, border: "1px solid #fde68a", color: "#92400e", fontSize: 13, lineHeight: 1.6 }}>
+      💡 Make sure you pasted your <strong>App Password</strong> (not your regular {guide.name} password).{" "}
+      {guide.quickLink && (
+        <a href={guide.quickLink.url} target="_blank" rel="noreferrer" style={{ color: "#92400e", fontWeight: 700 }}>
+          Generate one here →
+        </a>
       )}
     </div>
   );
@@ -123,7 +194,9 @@ const ConnectStep = ({ onConnect }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [host, setHost] = useState("");
+  const [hostAutoFilled, setHostAutoFilled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [guideDismissed, setGuideDismissed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState(() => {
@@ -132,6 +205,28 @@ const ConnectStep = ({ onConnect }) => {
     return "imap";
   });
   const { user, logout } = useAuth();
+
+  // Auto-fill IMAP host and reset guide dismiss when email domain changes
+  const handleEmailChange = (e) => {
+    const val = e.target.value;
+    setEmail(val);
+    setGuideDismissed(false);
+    const autoHost = getImapHost(val);
+    if (autoHost && (!host || hostAutoFilled)) {
+      setHost(autoHost);
+      setHostAutoFilled(true);
+    } else if (!autoHost && hostAutoFilled) {
+      setHost("");
+      setHostAutoFilled(false);
+    }
+  };
+
+  const handleHostChange = (e) => {
+    setHost(e.target.value);
+    setHostAutoFilled(false);
+  };
+
+  const showGuide = !guideDismissed && !!getAppPasswordGuide(email);
 
   const handleImapConnect = async () => {
     if (!email || !password) return setError("Email and password are required.");
@@ -225,12 +320,22 @@ const ConnectStep = ({ onConnect }) => {
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Email address</label>
-                  <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com" type="email" style={inputStyle}
+                  <input value={email} onChange={handleEmailChange} placeholder="you@gmail.com" type="email" style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
                 </div>
+
+                {/* Proactive App Password guide — shows as soon as a known domain is typed */}
+                {showGuide && (
+                  <AppPasswordGuide email={email} onDismiss={() => setGuideDismissed(true)} />
+                )}
+
                 <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>App password</label>
-                  <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Gmail: use an App Password" type="password" style={inputStyle}
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    App password
+                  </label>
+                  <input value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder={getAppPasswordGuide(email) ? "Paste your App Password here" : "Your email password"}
+                    type="password" style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
                 </div>
                 <button onClick={() => setShowAdvanced(!showAdvanced)} style={{ background: "none", border: "none", color: TEAL, fontSize: 13, cursor: "pointer", textAlign: "left", padding: 0 }}>
@@ -238,13 +343,15 @@ const ConnectStep = ({ onConnect }) => {
                 </button>
                 {showAdvanced && (
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Custom IMAP host (optional)</label>
-                    <input value={host} onChange={(e) => setHost(e.target.value)} placeholder="imap.example.com" style={inputStyle}
+                    <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      IMAP host {hostAutoFilled && <span style={{ color: TEAL_DARK, fontWeight: 400, textTransform: "none", fontSize: 11 }}>(auto-detected)</span>}
+                    </label>
+                    <input value={host} onChange={handleHostChange} placeholder="imap.example.com" style={inputStyle}
                       onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
                   </div>
                 )}
                 {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
-                <AppPasswordHint email={email} error={error} />
+                <AppPasswordErrorHint email={email} error={error} />
                 <button onClick={handleImapConnect} disabled={loading}
                   style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 4px 14px rgba(12,184,182,0.35)" }}>
                   {loading ? <><Spinner /> Connecting...</> : "Connect Email"}
@@ -273,11 +380,12 @@ const ConnectStep = ({ onConnect }) => {
           </div>
         </div>
 
-        <div style={{ marginTop: 16, padding: 14, background: "#fffbeb", borderRadius: 10, border: "1px solid #fde68a", fontSize: 13, color: "#92400e" }}>
-          💡 <strong>Gmail users:</strong> IMAP requires an{" "}
-          <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer" style={{ color: TEAL }}>App Password</a>,
-          not your regular password. Enable 2FA first.
-        </div>
+        {/* Only show generic tip when the user hasn't typed a recognised domain yet */}
+        {!getAppPasswordGuide(email) && (
+          <div style={{ marginTop: 16, padding: 14, background: "#fffbeb", borderRadius: 10, border: "1px solid #fde68a", fontSize: 13, color: "#92400e" }}>
+            💡 <strong>Gmail, Yahoo, Outlook & iCloud users:</strong> you'll need an <strong>App Password</strong> — not your regular password. Start typing your email above and we'll guide you through it.
+          </div>
+        )}
 
         <div style={{ marginTop: 12, textAlign: "center" }}>
           <button onClick={logout} style={{ background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer" }}>

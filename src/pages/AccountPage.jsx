@@ -447,23 +447,26 @@ export default function AccountPage() {
               To get started, connect an email account.<br />
               Zenboxie will scan your inbox and group emails by sender so you can bulk-delete in seconds.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <button
-                onClick={() => { setShowWelcomeModal(false); navigate("/?connect=1&tab=google"); }}
-                style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: "#4285F4", color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
-              >
-                🔐 Connect Gmail
-              </button>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <button
                 onClick={() => { setShowWelcomeModal(false); navigate("/?connect=1&tab=imap"); }}
-                style={{ width: "100%", padding: "14px", borderRadius: 12, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+                style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: "0 4px 14px rgba(12,184,182,0.35)" }}
               >
-                ✉️ Connect Other Email
+                ✉️ Connect Email (Gmail, Yahoo, Outlook…)
               </button>
+              <button
+                onClick={() => { setShowWelcomeModal(false); navigate("/?connect=1&tab=google"); }}
+                style={{ width: "100%", padding: "13px", borderRadius: 12, border: "1.5px solid #4285F4", background: "#fff", color: "#4285F4", fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+              >
+                🔐 Sign in with Google (OAuth)
+              </button>
+              <p style={{ margin: "4px 0 0", fontSize: 12, color: "#94a3b8", textAlign: "center", lineHeight: 1.5 }}>
+                Gmail users: use the top button with an App Password, or sign in with Google below.
+              </p>
             </div>
             <button
               onClick={() => setShowWelcomeModal(false)}
-              style={{ marginTop: 16, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer" }}
+              style={{ marginTop: 12, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer" }}
             >
               I'll do this later
             </button>
