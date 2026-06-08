@@ -65,6 +65,8 @@ export default function AccountPage() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [disconnecting, setDisconnecting] = useState(null);
+  const [reconnecting, setReconnecting] = useState(null); // account id currently reconnecting
+  const [reconnectErrors, setReconnectErrors] = useState({}); // { accountId: errorMsg }
   const [toast, setToast] = useState(null);
   const [inboxMenuOpen, setInboxMenuOpen] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
@@ -126,6 +128,20 @@ export default function AccountPage() {
       if (accs.length === 0) setShowWelcomeModal(true);
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
+
+  const handleOpenInbox = async (accountId) => {
+    setReconnecting(accountId);
+    setReconnectErrors((prev) => ({ ...prev, [accountId]: null }));
+    try {
+      const result = await apiCall(`/accounts/${accountId}/reconnect`, { method: "POST" });
+      sessionStorage.setItem("inboxSessionId", result.sessionId);
+      navigate(`/?sessionId=${result.sessionId}`);
+    } catch (err) {
+      setReconnectErrors((prev) => ({ ...prev, [accountId]: err.message || "Could not connect. Please try again." }));
+    } finally {
+      setReconnecting(null);
+    }
+  };
 
   const handleDisconnect = async (id, email) => {
     if (!confirm(`Disconnect ${email}? Zenboxie will no longer auto-reconnect this account.`)) return;
@@ -206,22 +222,28 @@ export default function AccountPage() {
           </button>
           <div ref={inboxMenuRef} style={{ position: "relative" }}>
             <button
-              onClick={() => accounts.length > 1 ? setInboxMenuOpen((o) => !o) : navigate("/")}
+              onClick={() => {
+                if (accounts.length > 1) { setInboxMenuOpen((o) => !o); }
+                else if (accounts.length === 1) { handleOpenInbox(accounts[0].id); }
+                else { navigate("/"); }
+              }}
+              disabled={reconnecting !== null && accounts.length === 1}
               style={{ padding: "7px 14px", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
             >
-              📬 Open Inbox {accounts.length > 1 && <span style={{ fontSize: 11 }}>▾</span>}
+              {reconnecting !== null && accounts.length === 1 ? <><Spinner color={TEAL_DARK} size={12} /> Connecting…</> : <>📬 Open Inbox {accounts.length > 1 && <span style={{ fontSize: 11 }}>▾</span>}</>}
             </button>
             {inboxMenuOpen && (
               <div style={{ position: "absolute", top: "calc(100% + 6px)", right: 0, background: "#fff", border: `1.5px solid ${TEAL_MID}`, borderRadius: 10, boxShadow: "0 8px 24px rgba(12,184,182,0.12)", minWidth: 220, zIndex: 200, overflow: "hidden" }}>
                 {accounts.map((a) => (
                   <button
                     key={a.id}
-                    onClick={() => { setInboxMenuOpen(false); navigate(`/?accountId=${a.id}`); }}
-                    style={{ width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 13, color: "#1e293b", display: "flex", flexDirection: "column", gap: 2 }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = TEAL_LIGHT}
-                    onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                    onClick={() => { setInboxMenuOpen(false); handleOpenInbox(a.id); }}
+                    disabled={reconnecting === a.id}
+                    style={{ width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: reconnecting === a.id ? "not-allowed" : "pointer", fontSize: 13, color: "#1e293b", display: "flex", flexDirection: "column", gap: 2, opacity: reconnecting === a.id ? 0.6 : 1 }}
+                    onMouseEnter={(e) => { if (reconnecting !== a.id) e.currentTarget.style.background = TEAL_LIGHT; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
                   >
-                    <span style={{ fontWeight: 600 }}>{a.email}</span>
+                    <span style={{ fontWeight: 600 }}>{reconnecting === a.id ? "Connecting…" : a.email}</span>
                     <span style={{ fontSize: 11, color: "#94a3b8" }}>{(PROVIDER_LABEL[a.provider] || a.provider)}</span>
                   </button>
                 ))}
@@ -342,10 +364,11 @@ export default function AccountPage() {
                   {/* Row 2: buttons */}
                   <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                     <button
-                      onClick={() => navigate(`/?accountId=${account.id}`)}
-                      style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+                      onClick={() => handleOpenInbox(account.id)}
+                      disabled={reconnecting === account.id}
+                      style={{ flex: 1, padding: "8px 0", borderRadius: 8, border: `1.5px solid ${TEAL_MID}`, background: reconnecting === account.id ? "#f1f5f9" : TEAL_LIGHT, color: TEAL_DARK, fontSize: 13, fontWeight: 600, cursor: reconnecting === account.id ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                     >
-                      Open Inbox
+                      {reconnecting === account.id ? <><Spinner color={TEAL_DARK} size={12} /> Connecting…</> : "Open Inbox"}
                     </button>
                     <button
                       onClick={() => handleDisconnect(account.id, account.email)}
@@ -356,6 +379,12 @@ export default function AccountPage() {
                       {disconnecting === account.id ? "Removing…" : "Disconnect"}
                     </button>
                   </div>
+                  {reconnectErrors[account.id] && (
+                    <div style={{ marginTop: 8, padding: "8px 12px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", fontSize: 12, color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                      <span>⚠️ {reconnectErrors[account.id]}</span>
+                      <button onClick={() => handleOpenInbox(account.id)} style={{ background: "none", border: "none", color: "#dc2626", fontWeight: 700, fontSize: 12, cursor: "pointer", padding: 0, whiteSpace: "nowrap" }}>Retry →</button>
+                    </div>
+                  )}
                 </div>
               );
             })}

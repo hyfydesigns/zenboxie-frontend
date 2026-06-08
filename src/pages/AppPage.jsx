@@ -1304,7 +1304,10 @@ export default function AppPage() {
           setProvider(result.provider);
           setPhase("scanning");
         })
-        .catch(() => setPhase("connect"));
+        .catch((err) => {
+          setReconnectError(err.message || "Could not reconnect. Please try again.");
+          setPhase("error");
+        });
       return;
     }
 
@@ -1366,8 +1369,10 @@ export default function AppPage() {
       setUserEmail(result.email);
       setProvider(result.provider);
       setPhase("scanning");
-    } catch {
-      setPhase("connect");
+    } catch (err) {
+      // Only show connect form if no accounts exist; otherwise show reconnect error
+      setReconnectError(err.message || "Could not reconnect. Please try again.");
+      setPhase("error");
     }
   };
 
@@ -1389,8 +1394,9 @@ export default function AppPage() {
       setUserEmail(result.email);
       setProvider(result.provider);
       setPhase("scanning");
-    } catch {
-      setPhase("connect");
+    } catch (err) {
+      setReconnectError(err.message || "Could not reconnect. Please try again.");
+      setPhase("error");
     }
   };
   const handleAddAccount = () => setPhase("connect");
@@ -1416,18 +1422,33 @@ export default function AppPage() {
   if (phase === "scanning") return <ScanningStep sessionId={sessionId} email={userEmail} folder={scanFolder} onDone={handleScanDone} onError={handleScanError} />;
   if (phase === "inbox") return <InboxDashboard sessionId={sessionId} email={userEmail} provider={provider} senders={senders} onLogout={handleDisconnect} onSwitchAccount={handleSwitchAccount} onAddAccount={handleAddAccount} providerWarning={providerWarning} />;
 
-  // error phase
+  // error phase — scan error or reconnect error
+  const errorMsg = scanError || reconnectError;
+  const isReconnectErr = !!reconnectError && !scanError;
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0fdfd, #e6f9f9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ maxWidth: 420, textAlign: "center", padding: 32 }}>
+      <div style={{ maxWidth: 440, textAlign: "center", padding: 32 }}>
         <ZenboxieWordmark size="lg" />
-        <div style={{ marginTop: 32, fontSize: 48 }}>😔</div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: "#0f2a2a", marginTop: 12 }}>Something went wrong</h2>
-        <p style={{ color: "#64748b", marginBottom: 24 }}>{scanError}</p>
-        <button onClick={handleDisconnect}
-          style={{ padding: "12px 32px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: "pointer", boxShadow: "0 4px 14px rgba(12,184,182,0.35)" }}>
-          Try Again
-        </button>
+        <div style={{ marginTop: 32, fontSize: 48 }}>{isReconnectErr ? "🔌" : "😔"}</div>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", color: "#0f2a2a", marginTop: 12 }}>
+          {isReconnectErr ? "Could not connect to inbox" : "Something went wrong"}
+        </h2>
+        <p style={{ color: "#64748b", marginBottom: 8, lineHeight: 1.6 }}>{errorMsg}</p>
+        {isReconnectErr && (
+          <p style={{ color: "#94a3b8", fontSize: 13, marginBottom: 24 }}>
+            Your credentials are saved — this is usually a temporary connection issue.
+          </p>
+        )}
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <button onClick={() => { setScanError(""); setReconnectError(""); setPhase("init"); tryAutoReconnect(); }}
+            style={{ padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: "pointer", boxShadow: "0 4px 14px rgba(12,184,182,0.35)" }}>
+            Try Again
+          </button>
+          <a href="/account"
+            style={{ padding: "12px 28px", borderRadius: 10, border: `1.5px solid ${TEAL_MID}`, background: "#fff", color: TEAL_DARK, fontWeight: 600, fontSize: 15, cursor: "pointer", textDecoration: "none" }}>
+            Account Settings
+          </a>
+        </div>
       </div>
     </div>
   );
