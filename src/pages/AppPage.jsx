@@ -31,7 +31,7 @@ const APP_PASSWORD_GUIDES = {
       { label: 'Search for "Mail" or select "Other (Custom name)", type Zenboxie, then click Create' },
       { label: "Copy the 16-character password shown and paste it into the App Password field above" },
     ],
-    note: null,
+    note: "You only need to do this once — Zenboxie saves your App Password encrypted and reconnects automatically.",
   },
   "googlemail.com": "gmail.com",
   "yahoo.com": {
@@ -45,6 +45,7 @@ const APP_PASSWORD_GUIDES = {
       { label: 'Select "Other app", type Zenboxie, click Generate' },
       { label: "Copy the password shown and paste it into the App Password field above" },
     ],
+    note: "You only need to do this once — Zenboxie saves your App Password encrypted and reconnects automatically.",
   },
   "ymail.com": "yahoo.com",
   "outlook.com": {
@@ -58,6 +59,7 @@ const APP_PASSWORD_GUIDES = {
       { label: 'Under "App passwords", click "Create a new app password"' },
       { label: "Copy the generated password and paste it into the App Password field above" },
     ],
+    note: "You only need to do this once — Zenboxie saves your App Password encrypted and reconnects automatically.",
   },
   "hotmail.com": "outlook.com",
   "live.com": "outlook.com",
@@ -73,6 +75,7 @@ const APP_PASSWORD_GUIDES = {
       { label: 'Click "App-Specific Passwords" → "+ Generate an app-specific password"' },
       { label: "Label it Zenboxie, click Create, then copy and paste the password above" },
     ],
+    note: "You only need to do this once — Zenboxie saves your App Password encrypted and reconnects automatically.",
   },
   "me.com": "icloud.com",
   "mac.com": "icloud.com",
@@ -312,8 +315,8 @@ const ConnectStep = ({ onConnect }) => {
             </div>
 
             <div style={{ marginTop: 16, padding: 12, background: TEAL_LIGHT, borderRadius: 10, border: `1px solid ${TEAL_MID}` }}>
-              <p style={{ fontSize: 12, color: "#0a5f5e", margin: 0 }}>
-                🔒 <strong>Privacy first:</strong> Credentials are never stored. All data stays in your session only and expires after 30 minutes.
+              <p style={{ fontSize: 12, color: "#0a5f5e", margin: 0, lineHeight: 1.6 }}>
+                🔒 <strong>You only need to do this once.</strong> Your password is encrypted with AES-256 and saved securely — Zenboxie will reconnect automatically next time, no password needed.
               </p>
             </div>
           </div>
