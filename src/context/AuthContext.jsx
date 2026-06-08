@@ -7,10 +7,11 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount: verify stored token and rehydrate user
+  // On mount: verify stored token (or refresh it) and rehydrate user
   useEffect(() => {
     const token = getToken();
-    if (!token) {
+    const refresh = localStorage.getItem("zenboxie_refresh");
+    if (!token && !refresh) {
       setLoading(false);
       return;
     }
@@ -19,7 +20,10 @@ export function AuthProvider({ children }) {
         if (data.user) setUser(data.user);
         else clearTokens();
       })
-      .catch(() => clearTokens())
+      .catch((err) => {
+        // Only clear tokens on explicit auth failure, not network errors
+        if (err.status === 401) clearTokens();
+      })
       .finally(() => setLoading(false));
   }, []);
 
