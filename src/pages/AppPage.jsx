@@ -31,7 +31,7 @@ const APP_PASSWORD_GUIDES = {
       { label: 'Search for "Mail" or select "Other (Custom name)", type Zenboxie, then click Create' },
       { label: "Copy the 16-character password shown and paste it into the App Password field above" },
     ],
-    note: 'Tip: Use the "Sign in with Google" tab instead for a one-click connection — no App Password needed.',
+    note: null,
   },
   "googlemail.com": "gmail.com",
   "yahoo.com": {
@@ -199,11 +199,6 @@ const ConnectStep = ({ onConnect }) => {
   const [guideDismissed, setGuideDismissed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState(() => {
-    const stored = sessionStorage.getItem("connectTab");
-    if (stored) { sessionStorage.removeItem("connectTab"); return stored; }
-    return "imap";
-  });
   const { user, logout } = useAuth();
 
   // Auto-fill IMAP host and reset guide dismiss when email domain changes
@@ -245,46 +240,6 @@ const ConnectStep = ({ onConnect }) => {
     }
   };
 
-  const handleGoogleConnect = async () => {
-    setLoading(true); setError("");
-    localStorage.removeItem("oauth_session");
-    try {
-      const data = await apiCall("/auth/google/url");
-      window.open(data.url, "google-oauth", "width=500,height=600,left=400,top=100");
-      const poll = setInterval(() => {
-        const stored = localStorage.getItem("oauth_session");
-        if (stored) {
-          clearInterval(poll); clearTimeout(timeout);
-          localStorage.removeItem("oauth_session");
-          try {
-            const { sessionId, email: oauthEmail } = JSON.parse(stored);
-            sessionStorage.setItem("inboxSessionId", sessionId);
-            window.focus();
-            onConnect(oauthEmail, "gmail", sessionId);
-          } catch (_) {
-            setError("Authentication failed. Please try again.");
-          }
-          setLoading(false);
-        }
-      }, 500);
-      const timeout = setTimeout(() => {
-        clearInterval(poll);
-        localStorage.removeItem("oauth_session");
-        setLoading(false);
-      }, 5 * 60 * 1000);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-
-  const tabStyle = (active) => ({
-    flex: 1, padding: "10px 0", border: "none",
-    borderBottom: active ? `2px solid ${TEAL}` : "2px solid transparent",
-    background: "none", color: active ? TEAL : "#94a3b8",
-    fontWeight: 600, fontSize: 14, cursor: "pointer", transition: "all 0.2s",
-  });
-
   const inputStyle = {
     width: "100%", padding: "11px 14px", marginTop: 6, borderRadius: 10,
     border: "1.5px solid #e2e8f0", fontSize: 14, outline: "none",
@@ -310,67 +265,51 @@ const ConnectStep = ({ onConnect }) => {
         </div>
 
         <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 8px 40px rgba(12,184,182,0.1)", border: `1px solid ${TEAL_MID}`, overflow: "hidden" }}>
-          <div style={{ display: "flex", borderBottom: "1px solid #f1f5f9", padding: "0 24px" }}>
-            <button style={tabStyle(activeTab === "imap")} onClick={() => setActiveTab("imap")}>✉️ Email & Password</button>
-            <button style={tabStyle(activeTab === "google")} onClick={() => setActiveTab("google")}>🔐 Sign in with Google</button>
+          <div style={{ padding: "18px 28px 4px", borderBottom: "1px solid #f1f5f9" }}>
+            <span style={{ fontWeight: 700, fontSize: 15, color: "#0f2a2a" }}>✉️ Connect your email</span>
           </div>
 
           <div style={{ padding: 28 }}>
-            {activeTab === "imap" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Email address</label>
-                  <input value={email} onChange={handleEmailChange} placeholder="you@gmail.com" type="email" style={inputStyle}
-                    onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
-                </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Email address</label>
+                <input value={email} onChange={handleEmailChange} placeholder="you@gmail.com" type="email" style={inputStyle}
+                  onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
+              </div>
 
-                {/* Proactive App Password guide — shows as soon as a known domain is typed */}
-                {showGuide && (
-                  <AppPasswordGuide email={email} onDismiss={() => setGuideDismissed(true)} />
-                )}
+              {/* Proactive App Password guide — shows as soon as a known domain is typed */}
+              {showGuide && (
+                <AppPasswordGuide email={email} onDismiss={() => setGuideDismissed(true)} />
+              )}
 
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  {getAppPasswordGuide(email) ? "App password" : "Password"}
+                </label>
+                <input value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder={getAppPasswordGuide(email) ? "Paste your App Password here" : "Your email password"}
+                  type="password" style={inputStyle}
+                  onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
+              </div>
+              <button onClick={() => setShowAdvanced(!showAdvanced)} style={{ background: "none", border: "none", color: TEAL, fontSize: 13, cursor: "pointer", textAlign: "left", padding: 0 }}>
+                {showAdvanced ? "▲" : "▼"} Advanced IMAP settings
+              </button>
+              {showAdvanced && (
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    App password
+                    IMAP host {hostAutoFilled && <span style={{ color: TEAL_DARK, fontWeight: 400, textTransform: "none", fontSize: 11 }}>(auto-detected)</span>}
                   </label>
-                  <input value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder={getAppPasswordGuide(email) ? "Paste your App Password here" : "Your email password"}
-                    type="password" style={inputStyle}
+                  <input value={host} onChange={handleHostChange} placeholder="imap.example.com" style={inputStyle}
                     onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
                 </div>
-                <button onClick={() => setShowAdvanced(!showAdvanced)} style={{ background: "none", border: "none", color: TEAL, fontSize: 13, cursor: "pointer", textAlign: "left", padding: 0 }}>
-                  {showAdvanced ? "▲" : "▼"} Advanced IMAP settings
-                </button>
-                {showAdvanced && (
-                  <div>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                      IMAP host {hostAutoFilled && <span style={{ color: TEAL_DARK, fontWeight: 400, textTransform: "none", fontSize: 11 }}>(auto-detected)</span>}
-                    </label>
-                    <input value={host} onChange={handleHostChange} placeholder="imap.example.com" style={inputStyle}
-                      onFocus={(e) => (e.target.style.borderColor = TEAL)} onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")} />
-                  </div>
-                )}
-                {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
-                <AppPasswordErrorHint email={email} error={error} />
-                <button onClick={handleImapConnect} disabled={loading}
-                  style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 4px 14px rgba(12,184,182,0.35)" }}>
-                  {loading ? <><Spinner /> Connecting...</> : "Connect Email"}
-                </button>
-              </div>
-            )}
-
-            {activeTab === "google" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ padding: 16, background: TEAL_LIGHT, borderRadius: 10, fontSize: 13, color: "#0f5454", lineHeight: 1.6, border: `1px solid ${TEAL_MID}` }}>
-                  Connects using Google OAuth2. You'll be redirected to Google to authorize access. No password is stored.
-                </div>
-                {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
-                <button onClick={handleGoogleConnect} disabled={loading}
-                  style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : "#4285F4", color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
-                  {loading ? <><Spinner /> Opening Google...</> : "🔐 Sign in with Google"}
-                </button>
-              </div>
-            )}
+              )}
+              {error && <div style={{ padding: "10px 14px", background: "#fef2f2", borderRadius: 8, border: "1px solid #fecaca", color: "#dc2626", fontSize: 13 }}>⚠️ {error}</div>}
+              <AppPasswordErrorHint email={email} error={error} />
+              <button onClick={handleImapConnect} disabled={loading}
+                style={{ padding: "13px", borderRadius: 10, border: "none", background: loading ? "#e2e8f0" : `linear-gradient(135deg, ${TEAL}, #2dd4bf)`, color: "#fff", fontWeight: 600, fontSize: 15, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: loading ? "none" : "0 4px 14px rgba(12,184,182,0.35)" }}>
+                {loading ? <><Spinner /> Connecting...</> : "Connect Email"}
+              </button>
+            </div>
 
             <div style={{ marginTop: 16, padding: 12, background: TEAL_LIGHT, borderRadius: 10, border: `1px solid ${TEAL_MID}` }}>
               <p style={{ fontSize: 12, color: "#0a5f5e", margin: 0 }}>
@@ -1343,10 +1282,8 @@ export default function AppPage() {
 
     // If ?connect=1 is present, go straight to connect step
     if (params.get("connect")) {
-      const tab = params.get("tab"); // "google" or "imap"
       window.history.replaceState({}, "", window.location.pathname);
       setPhase("connect");
-      if (tab) sessionStorage.setItem("connectTab", tab);
       return;
     }
 

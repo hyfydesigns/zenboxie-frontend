@@ -88,7 +88,7 @@ export default function PrivacyPage() {
               "Message IDs (used to perform deletions)",
             ]} />
             <P><strong>We never read, store, or transmit the body content of your emails.</strong></P>
-            <P><strong>Email credentials:</strong> IMAP passwords and Gmail OAuth refresh tokens are encrypted with AES-256 before being stored. The encryption key is never exposed or transmitted.</P>
+            <P><strong>Email credentials:</strong> IMAP passwords are encrypted with AES-256 before being stored. The encryption key is never exposed or transmitted.</P>
             <P><strong>Billing information:</strong> Payments are processed by Stripe. We never see or store your credit card details.</P>
             <P><strong>Usage data:</strong> We log actions such as sender deletions for the purpose of enforcing daily usage limits on free-tier accounts.</P>
           </Section>
@@ -106,36 +106,7 @@ export default function PrivacyPage() {
             ]} />
           </Section>
 
-          <Section title="4. Google User Data">
-            <P>
-              Zenboxie's use of data received from Google APIs adheres to the{" "}
-              <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" style={{ color: TEAL_DARK }}>
-                Google API Services User Data Policy
-              </a>
-              , including the Limited Use requirements.
-            </P>
-            <P><strong>OAuth scopes requested:</strong> When you connect Gmail via "Sign in with Google", Zenboxie requests the following scope:</P>
-            <UL items={[
-              "https://mail.google.com/ — full mailbox access, used solely to read email metadata (sender, subject, date, size) and to delete emails at your explicit direction.",
-            ]} />
-            <P><strong>How we use Google data:</strong></P>
-            <UL items={[
-              "We only request access to Gmail data that is necessary to provide the service (reading sender metadata and deleting emails at your direction).",
-              "We do not use Gmail data to serve advertisements.",
-              "We do not allow humans to read your Gmail data unless you explicitly request support assistance and provide access.",
-              "We do not transfer Gmail data to third parties except as necessary to provide the service (e.g. our database provider for storing your encrypted OAuth token).",
-              "We do not use Gmail data for any purpose other than providing and improving the Zenboxie email management service.",
-              "We store only your Gmail OAuth refresh token (encrypted with AES-256) to allow reconnecting to your inbox. We do not store email content.",
-            ]} />
-            <P>
-              You can revoke Zenboxie's access to your Gmail account at any time by visiting{" "}
-              <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" style={{ color: TEAL_DARK }}>
-                myaccount.google.com/permissions
-              </a>. You can also disconnect your account from within Zenboxie at <a href="https://zenboxie.com/account" style={{ color: TEAL_DARK }}>zenboxie.com/account</a>.
-            </P>
-          </Section>
-
-          <Section title="5. Data Storage and Security">
+          <Section title="4. Data Storage and Security">
             <P>Your data is stored in a PostgreSQL database hosted on Supabase, which is located in the United States. We use industry-standard security practices including:</P>
             <UL items={[
               "AES-256 encryption for stored email credentials",
@@ -146,30 +117,30 @@ export default function PrivacyPage() {
             <P>While we take reasonable steps to protect your data, no method of transmission over the internet is 100% secure.</P>
           </Section>
 
-          <Section title="6. Data Sharing">
+          <Section title="5. Data Sharing">
             <P>We do not sell your personal data. We share data only with the following third-party service providers who help us operate the service:</P>
             <UL items={[
               "Supabase — database hosting",
               "Railway — API server hosting",
               "Vercel — frontend hosting",
               "Stripe — payment processing",
-              "Google — Gmail OAuth (when you choose to connect Gmail)",
+              "Anthropic — AI analysis (when you use the AI smart filters feature)",
             ]} />
             <P>Each provider has their own privacy policy and security practices. We only share the minimum data necessary for each provider to perform their function.</P>
           </Section>
 
-          <Section title="7. Data Retention">
+          <Section title="6. Data Retention">
             <P>We retain your data for as long as your account is active. If you delete your account, we will delete your personal data within 30 days, except where we are required to retain it for legal or financial compliance purposes.</P>
             <P>Email metadata read during a scan is not permanently stored — it is processed in memory to generate the sender summary shown in the app, then discarded.</P>
           </Section>
 
-          <Section title="8. Your Rights">
+          <Section title="7. Your Rights">
             <P>You have the right to:</P>
             <UL items={[
               "Access the personal data we hold about you",
               "Request correction of inaccurate data",
               "Request deletion of your account and data",
-              "Revoke OAuth access at any time via your Google account settings",
+              "Disconnect any connected email account at any time via the Account page",
               "Export your data (CSV export is available in the app)",
             ]} />
             <P>
@@ -178,16 +149,16 @@ export default function PrivacyPage() {
             </P>
           </Section>
 
-          <Section title="9. Children's Privacy">
+          <Section title="8. Children's Privacy">
             <P>Zenboxie is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected such information, please contact us to have it removed.</P>
           </Section>
 
-          <Section title="10. Changes to This Policy">
+          <Section title="9. Changes to This Policy">
             <P>We may update this Privacy Policy from time to time. We will notify you of any changes by updating the "Last updated" date at the top of this page. This policy is always available at <a href="https://zenboxie.com/privacy" style={{ color: TEAL_DARK }}>zenboxie.com/privacy</a>.</P>
-            <P><strong>If we change how we access, use, or share Google user data</strong>, we will notify affected users by email before those changes take effect, in addition to updating this policy. Continued use of the service after notification constitutes acceptance of the updated policy.</P>
+            <P>We will notify affected users by email before any material changes to this policy take effect. Continued use of the service after notification constitutes acceptance of the updated policy.</P>
           </Section>
 
-          <Section title="11. Contact Us">
+          <Section title="10. Contact Us">
             <P>If you have any questions about this Privacy Policy, please contact us:</P>
             <div style={{ background: TEAL_LIGHT, border: `1.5px solid ${TEAL_MID}`, borderRadius: 12, padding: "20px 24px", display: "inline-block" }}>
               <div style={{ fontSize: 14, color: "#0f2a2a", lineHeight: 2 }}>

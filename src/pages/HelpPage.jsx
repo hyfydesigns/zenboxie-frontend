@@ -10,7 +10,7 @@ const SECTIONS = [
     items: [
       {
         q: "How do I connect my email?",
-        a: `Go to the main app and choose how to connect:\n\n• **Sign in with Google** (recommended for Gmail) — Click "Connect with Google", sign in, and authorize Zenboxie. No password needed.\n\n• **Email & Password** — Enter your email address and an app password (see below). Works for Gmail, Yahoo, Outlook, iCloud, and custom mail servers.`,
+        a: `Go to the main app and enter your email address and password on the connect screen.\n\nZenboxie connects via IMAP and supports Gmail, Yahoo, Outlook, iCloud, and any custom mail server.\n\n**Gmail, Yahoo, Outlook, and iCloud** require an App Password — see the next question for how to get one. The connect screen will guide you automatically when it detects your email domain.`,
       },
       {
         q: "What is an App Password and why do I need one?",
@@ -18,7 +18,7 @@ const SECTIONS = [
       },
       {
         q: "Can I use my real email password?",
-        a: `It depends on your provider:\n\n• **Gmail** — No. Google disabled basic auth in 2022. Use "Sign in with Google" (no password at all) or an App Password.\n• **Yahoo** — No. Use an App Password.\n• **Outlook** — Only if 2FA is disabled. Otherwise use an App Password.\n• **iCloud** — No. Use an App-Specific Password.\n• **Custom/work mail servers** — Usually yes, regular passwords work.`,
+        a: `It depends on your provider:\n\n• **Gmail** — No. Google disabled basic auth in 2022. You must use an App Password.\n• **Yahoo** — No. Use an App Password.\n• **Outlook** — Only if 2FA is disabled. Otherwise use an App Password.\n• **iCloud** — No. Use an App-Specific Password.\n• **Custom/work mail servers** — Usually yes, regular passwords work.`,
       },
       {
         q: "How do I create a Zenboxie account?",
@@ -45,7 +45,7 @@ const SECTIONS = [
       },
       {
         q: "Can I scan a specific folder?",
-        a: `Yes, if you're on a Premium plan and connected via Email & Password. A folder selector appears above the sender list. Select any folder and click "Rescan" to analyse it. Gmail (Sign in with Google) uses labels instead of folders and scans the full inbox by default.`,
+        a: `Yes, if you're on a Premium plan. A folder selector appears above the sender list. Select any folder and click "Rescan" to analyse it. Gmail scans the INBOX folder by default; other folders (including Sent, Spam, etc.) are available with a Premium plan.`,
       },
       {
         q: "How do I rescan after making changes?",
@@ -152,7 +152,7 @@ const SECTIONS = [
     items: [
       {
         q: "What is included in the Free plan?",
-        a: `• 1 connected account\n• Sign in with Google & Email & Password\n• Scan up to 500 emails\n• 3 sender deletions per day\n• Move to trash only\n• CSV export`,
+        a: `• 1 connected account\n• IMAP connection (Gmail, Yahoo, Outlook, iCloud, and more)\n• Scan up to 500 emails\n• 3 sender deletions per day\n• Move to trash only\n• CSV export`,
       },
       {
         q: "What does Pro add?",
@@ -202,7 +202,7 @@ const SECTIONS = [
     items: [
       {
         q: "How do I change my password?",
-        a: `Go to your Account Dashboard (/account) and scroll down to the **Password** section. Click "Change password" to expand the form.\n\nEnter your current password, your new password (minimum 8 characters), confirm it, then click "Update password". You'll see a confirmation message when it's saved.\n\nNote: If you signed in with Google, you don't have a Zenboxie password — access is managed through your Google account.`,
+        a: `Go to your Account Dashboard (/account) and scroll down to the **Password** section. Click "Change password" to expand the form.\n\nEnter your current password, your new password (minimum 8 characters), confirm it, then click "Update password". You'll see a confirmation message when it's saved.`,
       },
       {
         q: "How do I delete my account?",
@@ -221,11 +221,11 @@ const SECTIONS = [
       },
       {
         q: "How are my email credentials stored?",
-        a: `Email & Password credentials are encrypted with AES-256 before being stored in the database. The encryption key never leaves the server. Sign in with Google stores an access token (not your password) which can be revoked at any time from your Google account.`,
+        a: `Email credentials are encrypted with AES-256 before being stored in the database. The encryption key never leaves the server.`,
       },
       {
-        q: "How do I revoke Zenboxie's access to my Gmail?",
-        a: `Go to myaccount.google.com → Security → Third-party apps with account access → find Zenboxie → Remove access. This immediately revokes the OAuth token.`,
+        q: "How do I revoke Zenboxie's access to my email?",
+        a: `Go to your Account Dashboard (/account) and click "Disconnect" next to the account you want to remove. This deletes the stored credentials from Zenboxie's servers immediately.\n\nFor Gmail App Passwords specifically, you can also revoke the App Password itself by going to myaccount.google.com/apppasswords and deleting the entry for Zenboxie.`,
       },
     ],
   },

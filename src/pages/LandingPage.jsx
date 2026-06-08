@@ -70,7 +70,7 @@ export default function LandingPage() {
           <p style={{ color: "#64748b", fontSize: 15, margin: "0 0 48px" }}>Three steps to a cleaner inbox.</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 24 }}>
             {[
-              { step: "1", icon: "🔗", title: "Connect your email", desc: "Sign in with Google or use an app password. We support Gmail, Yahoo, Outlook, iCloud and more." },
+              { step: "1", icon: "🔗", title: "Connect your email", desc: "Enter your email and password. We support Gmail, Yahoo, Outlook, iCloud and any IMAP server." },
               { step: "2", icon: "📊", title: "Scan & analyse", desc: "Zenboxie reads your inbox metadata — never the body content — and groups emails by sender instantly." },
               { step: "3", icon: "🗑", title: "Bulk delete", desc: "Select the senders you want gone and delete all their emails in one click. Done in seconds." },
             ].map((s) => (
@@ -134,7 +134,7 @@ export default function LandingPage() {
             Zenboxie reads only email metadata — sender, subject, date, and size. <strong>We never read, store, or transmit email body content.</strong>
           </p>
           <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-            Credentials are encrypted with AES-256. Google OAuth stores only an access token, never your password.
+            Credentials are encrypted with AES-256 and never stored in plain text. We never read your email body content.
           </p>
         </div>
 
