@@ -29,7 +29,7 @@ const APP_PASSWORD_GUIDES = {
       { label: "Go to your Google Account App Passwords page", url: "https://myaccount.google.com/apppasswords", urlLabel: "myaccount.google.com/apppasswords" },
       { label: "If prompted, sign in and make sure 2-Step Verification is ON (required by Google)" },
       { label: 'Search for "Mail" or select "Other (Custom name)", type Zenboxie, then click Create' },
-      { label: "Copy the 16-character password shown and paste it into the App Password field above" },
+      { label: "Copy the 16-character password shown and paste it into the App Password field below" },
     ],
     note: "You only need to do this once — Zenboxie saves your App Password encrypted and reconnects automatically.",
   },
